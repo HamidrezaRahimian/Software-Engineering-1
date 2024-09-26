@@ -1,0 +1,244 @@
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; color: rgb(166, 10, 8); font-size: 22px;">Pizza Vending Machine | Test | JGiven</span></p>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> jgiven;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">com.tngtech.jgiven.Stage</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">com.tngtech.jgiven.annotation.ScenarioState</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.Getter</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">model.Cart</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">model.MachineState</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">model.PizzaVendingMachine</span>;
+
+@Getter
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">GivenPizzaVendingMachine</span> <span style="font-weight: bold">extends</span> Stage&lt;GivenPizzaVendingMachine&gt; {
+    @ScenarioState
+    <span style="font-weight: bold">private</span> PizzaVendingMachine machine;
+    @ScenarioState
+    <span style="font-weight: bold">private</span> Cart cart;
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> the_pizza_vending_machine_is_idle() {
+        machine = <span style="font-weight: bold">new</span> PizzaVendingMachine();
+        cart = <span style="font-weight: bold">new</span> Cart();
+        machine.setState(MachineState.IDLE);
+        self();
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> jgiven;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">com.tngtech.jgiven.Stage</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">com.tngtech.jgiven.annotation.ScenarioState</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">model.*</span>;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">WhenPizzaVendingMachine</span> <span style="font-weight: bold">extends</span> Stage&lt;WhenPizzaVendingMachine&gt; {
+    @ScenarioState
+    <span style="font-weight: bold">private</span> PizzaVendingMachine machine;
+    @ScenarioState
+    <span style="font-weight: bold">private</span> Cart cart;
+    @ScenarioState
+    <span style="font-weight: bold">private</span> Pizza selectedPizza;
+    @ScenarioState
+    <span style="font-weight: bold">private</span> Payment payment;
+    @ScenarioState
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">boolean</span> paymentSuccess;
+
+    <span style="font-weight: bold">public</span> WhenPizzaVendingMachine user_selects_a_pizza_of_size_with_crust(PizzaType pizzaType, PizzaSize pizzaSize, CrustType crustType) {
+        selectedPizza = machine.selectPizza(pizzaType, pizzaSize, crustType);
+        <span style="font-weight: bold">return</span> self();
+    }
+
+    <span style="font-weight: bold">public</span> WhenPizzaVendingMachine adds_the_pizza_to_the_cart() {
+        machine.addToCart(cart, selectedPizza);
+        <span style="font-weight: bold">return</span> self();
+    }
+
+    <span style="font-weight: bold">public</span> WhenPizzaVendingMachine proceeds_to_payment_with(PaymentMethod paymentMethod) {
+        payment = <span style="font-weight: bold">new</span> Payment(paymentMethod, cart.calculateTotal());
+        paymentSuccess = machine.processPayment(payment);
+        <span style="font-weight: bold">return</span> self();
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> dispense_pizza() {
+        machine.dispensePizza();
+        self();
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> jgiven;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">com.tngtech.jgiven.Stage</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">com.tngtech.jgiven.annotation.ScenarioState</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">model.Cart</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">model.PizzaVendingMachine</span>;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">static</span> org.junit.jupiter.api.Assertions.assertEquals;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">static</span> org.junit.jupiter.api.Assertions.assertTrue;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">ThenPizzaVendingMachine</span> <span style="font-weight: bold">extends</span> Stage&lt;ThenPizzaVendingMachine&gt; {
+    @ScenarioState
+    <span style="font-weight: bold">private</span> PizzaVendingMachine machine;
+    @ScenarioState
+    <span style="font-weight: bold">private</span> Cart cart;
+    @ScenarioState
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">boolean</span> paymentSuccess;
+
+    <span style="font-weight: bold">public</span> ThenPizzaVendingMachine the_total_price_should_be_calculated_correctly() {
+        <span style="font-weight: bold">double</span> totalPrice = machine.calculateTotal(cart);
+        assertEquals(totalPrice, cart.calculateTotal());
+        <span style="font-weight: bold">return</span> self();
+    }
+
+    <span style="font-weight: bold">public</span> ThenPizzaVendingMachine the_payment_should_be_processed_successfully() {
+        assertTrue(paymentSuccess);
+        <span style="font-weight: bold">return</span> self();
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> the_pizza_should_be_dispensed() {
+        assertTrue(machine.isPizzaDispensed());
+        self();
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> jgiven;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">com.tngtech.jgiven.junit5.ScenarioTest</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">model.CrustType</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">model.PaymentMethod</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">model.PizzaSize</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">model.PizzaType</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">org.junit.jupiter.api.Test</span>;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">TestApplication</span> <span style="font-weight: bold">extends</span> ScenarioTest&lt;GivenPizzaVendingMachine, WhenPizzaVendingMachine, ThenPizzaVendingMachine&gt; {
+    @Test
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> selecting_pizza_and_processing_payment() {
+        given().the_pizza_vending_machine_is_idle();
+        when().user_selects_a_pizza_of_size_with_crust(PizzaType.PEPPERONI, PizzaSize.MEDIUM, CrustType.THICK)
+                .adds_the_pizza_to_the_cart()
+                .proceeds_to_payment_with(PaymentMethod.CREDIT_CARD)
+                .dispense_pizza();
+        then().the_total_price_should_be_calculated_correctly()
+                .the_payment_should_be_processed_successfully()
+                .the_pizza_should_be_dispensed();
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Prof. Dr. Carsten M&uuml;ller <span style="color: rgb(166, 10, 8);">|</span> Software Engineering</span></p>

@@ -1,0 +1,329 @@
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; color: rgb(166, 10, 8); font-size: 22px;">Single Responsibility Principle | Refactoring</span></p>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> nightmare;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">enum</span> MenuItem {
+    BURGER(5.99), FRIES(2.99), SHAKE(3.99);
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> <span style="font-weight: bold">double</span> price;
+
+    MenuItem(<span style="font-weight: bold">double</span> price) {
+        <span style="font-weight: bold">this</span>.price = price;
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">double</span> getPrice() {
+        <span style="font-weight: bold">return</span> price;
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3
+4
+5</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> nightmare;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">enum</span> PaymentMethod {
+    CASH, CARD, APPLE_PAY, GOOGLE_PAY
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
+ 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> nightmare;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">java.util.ArrayList</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">java.util.HashMap</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">java.util.List</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">java.util.Map</span>;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">SelfServiceTerminal</span> {
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> List&lt;MenuItem&gt; cart = <span style="font-weight: bold">new</span> ArrayList&lt;&gt;();
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> Map&lt;MenuItem, Double&gt; inventoryDatabase = <span style="font-weight: bold">new</span> HashMap&lt;&gt;();
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">double</span> totalAmount;
+    <span style="font-weight: bold">private</span> PaymentMethod selectedPaymentMethod;
+
+    <span style="font-weight: bold">public</span> SelfServiceTerminal() {
+        System.out.println(<span style="font-style: italic">&quot;initializing terminal.&quot;</span>);
+        loadMenu();
+        initializeNetworkConnection();
+        renderUI();
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> selectItem(MenuItem item) {
+        System.out.println(<span style="font-style: italic">&quot;selecting item: &quot;</span> + item);
+        cart.add(item);
+        totalAmount += item.getPrice();
+        logAction(<span style="font-style: italic">&quot;item added to cart: &quot;</span> + item);
+
+        <span style="font-weight: bold">if</span> (cart.size() &gt; 5) {
+            System.out.println(<span style="font-style: italic">&quot;auto-applying discount for bulk orders.&quot;</span>);
+            totalAmount -= 5;
+        }
+
+        fraudDetectionOnCart();
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> processPayment(PaymentMethod method) {
+        <span style="font-weight: bold">this</span>.selectedPaymentMethod = method;
+        System.out.println(<span style="font-style: italic">&quot;processing payment using &quot;</span> + method);
+
+        <span style="font-weight: bold">if</span> (!checkNetworkConnection()) {
+            System.out.println(<span style="font-style: italic">&quot;network error. payment failed.&quot;</span>);
+            logAction(<span style="font-style: italic">&quot;payment failed due to network issue.&quot;</span>);
+            <span style="font-weight: bold">return</span>;
+        }
+
+        <span style="font-weight: bold">switch</span> (method) {
+            <span style="font-weight: bold">case</span> CASH:
+                handleCashPayment();
+                <span style="font-weight: bold">break</span>;
+            <span style="font-weight: bold">case</span> CARD:
+            <span style="font-weight: bold">case</span> APPLE_PAY:
+            <span style="font-weight: bold">case</span> GOOGLE_PAY:
+                handleDigitalPayment(method);
+                <span style="font-weight: bold">break</span>;
+        }
+
+        resetCart();
+        printReceipt();
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> logAction(String action) {
+        System.out.println(<span style="font-style: italic">&quot;[log] &quot;</span> + action);
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> loadMenu() {
+        System.out.println(<span style="font-style: italic">&quot;loading menu.&quot;</span>);
+        <span style="font-weight: bold">for</span> (MenuItem item : MenuItem.values()) {
+            inventoryDatabase.put(item, item.getPrice());
+        }
+        logAction(<span style="font-style: italic">&quot;menu loaded: &quot;</span> + inventoryDatabase.keySet());
+        fraudDetection();
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> displayCart() {
+        System.out.println(<span style="font-style: italic">&quot;your cart contains: &quot;</span> + cart);
+        logAction(<span style="font-style: italic">&quot;cart contents displayed.&quot;</span>);
+        fraudDetectionOnCart();
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> printReceipt() {
+        System.out.println(<span style="font-style: italic">&quot;--- receipt ---&quot;</span>);
+        System.out.println(<span style="font-style: italic">&quot;items: &quot;</span> + cart);
+        System.out.println(<span style="font-style: italic">&quot;total amount: &quot;</span> + totalAmount);
+        System.out.println(<span style="font-style: italic">&quot;paid using: &quot;</span> + selectedPaymentMethod);
+        logAction(<span style="font-style: italic">&quot;receipt printed.&quot;</span>);
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> fraudDetection() {
+        System.out.println(<span style="font-style: italic">&quot;running fraud detection checks.&quot;</span>);
+        <span style="font-weight: bold">if</span> (inventoryDatabase.size() &gt; 10) {
+            System.out.println(<span style="font-style: italic">&quot;potential fraud detected: too many menu items.&quot;</span>);
+        }
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> fraudDetectionOnCart() {
+        System.out.println(<span style="font-style: italic">&quot;running fraud check on cart...&quot;</span>);
+        <span style="font-weight: bold">if</span> (totalAmount &gt; 100) {
+            System.out.println(<span style="font-style: italic">&quot;fraud alert: suspiciously high total amount.&quot;</span>);
+        }
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> initializeNetworkConnection() {
+        System.out.println(<span style="font-style: italic">&quot;connecting to payment gateway.&quot;</span>);
+        String networkStatus = <span style="font-style: italic">&quot;Connected&quot;</span>;
+        logAction(<span style="font-style: italic">&quot;network status: &quot;</span> + networkStatus);
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">boolean</span> checkNetworkConnection() {
+        String networkStatus = <span style="font-style: italic">&quot;connected&quot;</span>;
+        <span style="font-weight: bold">return</span> networkStatus.equals(<span style="font-style: italic">&quot;connected&quot;</span>);
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> renderUI() {
+        System.out.println(<span style="font-style: italic">&quot;rendering user interface.&quot;</span>);
+        System.out.println(<span style="font-style: italic">&quot;available items: &quot;</span> + inventoryDatabase.keySet());
+        displayCart();
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> handleCashPayment() {
+        System.out.println(<span style="font-style: italic">&quot;handling cash payment.&quot;</span>);
+        logAction(<span style="font-style: italic">&quot;cash payment initiated.&quot;</span>);
+        <span style="font-weight: bold">if</span> (totalAmount &gt; 100) {
+            System.out.println(<span style="font-style: italic">&quot;suspicious amount for cash. possible fraud.&quot;</span>);
+        }
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> handleDigitalPayment(PaymentMethod method) {
+        System.out.println(<span style="font-style: italic">&quot;processing &quot;</span> + method + <span style="font-style: italic">&quot; payment.&quot;</span>);
+        logAction(method + <span style="font-style: italic">&quot; payment initiated.&quot;</span>);
+        <span style="font-weight: bold">if</span> (totalAmount &gt; 50) {
+            System.out.println(<span style="font-style: italic">&quot;auto-applying digital payment discount.&quot;</span>);
+            totalAmount -= 5;
+        }
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> resetCart() {
+        System.out.println(<span style="font-style: italic">&quot;resetting cart after payment.&quot;</span>);
+        cart.clear();
+        totalAmount = 0;
+        logAction(<span style="font-style: italic">&quot;cart reset after payment.&quot;</span>);
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Prof. Dr. Carsten M&uuml;ller <span style="color: rgb(166, 10, 8);">|</span> Software Engineering</span></p>

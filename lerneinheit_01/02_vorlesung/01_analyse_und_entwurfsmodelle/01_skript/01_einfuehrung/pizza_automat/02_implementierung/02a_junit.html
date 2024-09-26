@@ -1,0 +1,217 @@
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; color: rgb(166, 10, 8); font-size: 22px;">Pizza Vending Machine | Test | JUnit</span></p>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> junit;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">model.*</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">org.junit.jupiter.api.BeforeEach</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">org.junit.jupiter.api.Nested</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">org.junit.jupiter.api.Test</span>;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">static</span> org.junit.jupiter.api.Assertions.assertEquals;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">static</span> org.junit.jupiter.api.Assertions.assertTrue;
+
+<span style="font-style: italic">// Nested Tests: Group related test cases for better organization and readability.</span>
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">TestApplication01</span> {
+    @Nested
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">CartTests</span> {
+        <span style="font-weight: bold">private</span> Cart cart;
+
+        @BeforeEach
+        <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> setup() {
+            cart = <span style="font-weight: bold">new</span> Cart();
+        }
+
+        @Test
+        <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> shouldAddPizzaToCart() {
+            Pizza pizza = <span style="font-weight: bold">new</span> Pizza(PizzaType.MARGHERITA, PizzaSize.SMALL, CrustType.THIN);
+            cart.addToCart(pizza);
+            assertEquals(1, cart.getPizzas().size());
+        }
+
+        @Test
+        <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> shouldCalculateTotalPrice() {
+            cart.addToCart(<span style="font-weight: bold">new</span> Pizza(PizzaType.PEPPERONI, PizzaSize.MEDIUM, CrustType.THICK));
+            cart.addToCart(<span style="font-weight: bold">new</span> Pizza(PizzaType.MARGHERITA, PizzaSize.SMALL, CrustType.THIN));
+            assertEquals(20.00, cart.calculateTotal());
+        }
+    }
+
+    @Nested
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">PaymentTests</span> {
+        @Test
+        <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> shouldProcessPaymentSuccessfully() {
+            Payment payment = <span style="font-weight: bold">new</span> Payment(PaymentMethod.CREDIT_CARD, 10.00);
+            assertTrue(payment.processPayment());
+        }
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> junit;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">model.CrustType</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">model.Pizza</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">model.PizzaSize</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">model.PizzaType</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">org.junit.jupiter.params.ParameterizedTest</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">org.junit.jupiter.params.provider.CsvSource</span>;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">static</span> org.junit.jupiter.api.Assertions.assertEquals;
+
+<span style="font-style: italic">// Parameterized Tests: Use @ParameterizedTest and @CsvSource to test a method</span>
+<span style="font-style: italic">//                      with different input values, ensuring robustness against various scenarios.</span>
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">TestApplication02</span> {
+    @ParameterizedTest
+    @CsvSource({
+            <span style="font-style: italic">&quot;MARGHERITA, SMALL, THIN, MARGHERITA Pizza - SMALL - THIN Crust&quot;</span>,
+            <span style="font-style: italic">&quot;PEPPERONI, LARGE, THICK, PEPPERONI Pizza - LARGE - THICK Crust&quot;</span>
+    })
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> shouldReturnCorrectDescription(PizzaType type, PizzaSize size, CrustType crust,
+                                               String expectedDescription) {
+        Pizza pizza = <span style="font-weight: bold">new</span> Pizza(type, size, crust);
+        assertEquals(expectedDescription, pizza.getDescription());
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> junit;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">model.MachineState</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">model.PizzaVendingMachine</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">org.junit.jupiter.api.DynamicTest</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">org.junit.jupiter.api.TestFactory</span>;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">java.util.List</span>;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">static</span> org.junit.jupiter.api.Assertions.assertSame;
+
+<span style="font-style: italic">// Dynamic Tests: Created with @TestFactory, dynamic tests provide flexibility and are generated at runtime,</span>
+<span style="font-style: italic">//                which is useful for scenarios where test data or conditions are dynamic.</span>
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">TestApplication03</span> {
+    @TestFactory
+    <span style="font-weight: bold">public</span> List&lt;DynamicTest&gt; machineStates() {
+        PizzaVendingMachine machine = <span style="font-weight: bold">new</span> PizzaVendingMachine();
+        machine.setState(MachineState.IDLE);
+
+        <span style="font-weight: bold">return</span> List.of(
+                DynamicTest.dynamicTest(<span style="font-style: italic">&quot;should transition from IDLE to PROCESSING_SELECTION&quot;</span>, () -&gt; {
+                    machine.setState(MachineState.PROCESSING_SELECTION);
+                    assertSame(machine.getState(), MachineState.PROCESSING_SELECTION);
+                }),
+                DynamicTest.dynamicTest(<span style="font-style: italic">&quot;should transition from PROCESSING_SELECTION to PROCESSING_PAYMENT&quot;</span>, () -&gt; {
+                    machine.setState(MachineState.PROCESSING_PAYMENT);
+                    assertSame(machine.getState(), MachineState.PROCESSING_PAYMENT);
+                }),
+                DynamicTest.dynamicTest(<span style="font-style: italic">&quot;should transition from PROCESSING_PAYMENT to DISPENSING_PIZZA&quot;</span>, () -&gt; {
+                    machine.setState(MachineState.DISPENSING_PIZZA);
+                    assertSame(machine.getState(), MachineState.DISPENSING_PIZZA);
+                })
+        );
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Prof. Dr. Carsten M&uuml;ller <span style="color: rgb(166, 10, 8);">|</span> Software Engineering</span></p>

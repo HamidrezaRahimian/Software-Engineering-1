@@ -1,0 +1,134 @@
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; color: rgb(166, 10, 8); font-size: 22px;">State Machine | Jet Engine</span></p>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> state;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">engine.JetEngine</span>;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">abstract</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">EngineState</span> {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">abstract</span> <span style="font-weight: bold">void</span> start(JetEngine engine);
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">abstract</span> <span style="font-weight: bold">void</span> shutDown(JetEngine engine);
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">abstract</span> <span style="font-weight: bold">void</span> detectFault(JetEngine engine);
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">abstract</span> <span style="font-weight: bold">void</span> resolveFault(JetEngine engine);
+}
+</pre></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> state;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">engine.JetEngine</span>;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">IdleState</span> <span style="font-weight: bold">extends</span> EngineState {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> start(JetEngine engine) {
+        engine.setState(<span style="font-weight: bold">new</span> StartingState());
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> shutDown(JetEngine engine) {
+        <span style="font-weight: bold">throw</span> <span style="font-weight: bold">new</span> IllegalStateException(<span style="font-style: italic">&quot;engine already idle.&quot;</span>);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> detectFault(JetEngine engine) {
+        <span style="font-weight: bold">throw</span> <span style="font-weight: bold">new</span> IllegalStateException(<span style="font-style: italic">&quot;Fault cannot be detected unless the engine running.&quot;</span>);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> resolveFault(JetEngine engine) {
+        <span style="font-weight: bold">throw</span> <span style="font-weight: bold">new</span> IllegalStateException(<span style="font-style: italic">&quot;no fault to resolve.&quot;</span>);
+    }
+}
+</pre></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> state;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">engine.JetEngine</span>;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">StartingState</span> <span style="font-weight: bold">extends</span> EngineState {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> start(JetEngine engine) {
+        <span style="font-weight: bold">throw</span> <span style="font-weight: bold">new</span> IllegalStateException(<span style="font-style: italic">&quot;engine already starting.&quot;</span>);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> shutDown(JetEngine engine) {
+        <span style="font-weight: bold">throw</span> <span style="font-weight: bold">new</span> IllegalStateException(<span style="font-style: italic">&quot;engine starting.&quot;</span>);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> detectFault(JetEngine engine) {
+        <span style="font-weight: bold">throw</span> <span style="font-weight: bold">new</span> IllegalStateException(<span style="font-style: italic">&quot;fault cannot be detected unless the engine running.&quot;</span>);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> resolveFault(JetEngine engine) {
+        <span style="font-weight: bold">throw</span> <span style="font-weight: bold">new</span> IllegalStateException(<span style="font-style: italic">&quot;no fault to resolve.&quot;</span>);
+    }
+}
+</pre></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> state;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">engine.JetEngine</span>;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">RunningState</span> <span style="font-weight: bold">extends</span> EngineState {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> start(JetEngine engine) {
+        <span style="font-weight: bold">throw</span> <span style="font-weight: bold">new</span> IllegalStateException(<span style="font-style: italic">&quot;engine already running.&quot;</span>);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> shutDown(JetEngine engine) {
+        engine.setState(<span style="font-weight: bold">new</span> ShuttingDownState());
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> detectFault(JetEngine engine) {
+        engine.setState(<span style="font-weight: bold">new</span> FaultyState());
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> resolveFault(JetEngine engine) {
+        <span style="font-weight: bold">throw</span> <span style="font-weight: bold">new</span> IllegalStateException(<span style="font-style: italic">&quot;no fault to resolve.&quot;</span>);
+    }
+}
+</pre></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> state;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">engine.JetEngine</span>;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">ShuttingDownState</span> <span style="font-weight: bold">extends</span> EngineState {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> start(JetEngine engine) {
+        <span style="font-weight: bold">throw</span> <span style="font-weight: bold">new</span> IllegalStateException(<span style="font-style: italic">&quot;engine shutting down.&quot;</span>);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> shutDown(JetEngine engine) {
+        <span style="font-weight: bold">throw</span> <span style="font-weight: bold">new</span> IllegalStateException(<span style="font-style: italic">&quot;engine already shutting down.&quot;</span>);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> detectFault(JetEngine engine) {
+        <span style="font-weight: bold">throw</span> <span style="font-weight: bold">new</span> IllegalStateException(<span style="font-style: italic">&quot;fault cannot be detected unless the engine is running.&quot;</span>);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> resolveFault(JetEngine engine) {
+        engine.setState(<span style="font-weight: bold">new</span> IdleState());
+    }
+}
+</pre></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> state;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">engine.JetEngine</span>;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">FaultyState</span> <span style="font-weight: bold">extends</span> EngineState {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> start(JetEngine engine) {
+        <span style="font-weight: bold">throw</span> <span style="font-weight: bold">new</span> IllegalStateException(<span style="font-style: italic">&quot;cannot start engine due to fault.&quot;</span>);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> shutDown(JetEngine engine) {
+        engine.setState(<span style="font-weight: bold">new</span> ShuttingDownState());
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> detectFault(JetEngine engine) {
+        <span style="font-weight: bold">throw</span> <span style="font-weight: bold">new</span> IllegalStateException(<span style="font-style: italic">&quot;fault already detected.&quot;</span>);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> resolveFault(JetEngine engine) {
+        engine.setState(<span style="font-weight: bold">new</span> ShuttingDownState());
+    }
+}
+</pre></div>
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Prof. Dr. Carsten M&uuml;ller <span style="color: rgb(166, 10, 8);">|</span> Software Engineering</span></p>

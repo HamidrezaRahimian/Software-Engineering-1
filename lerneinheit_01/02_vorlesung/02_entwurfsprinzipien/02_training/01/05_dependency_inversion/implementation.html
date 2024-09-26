@@ -1,0 +1,240 @@
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; color: rgb(166, 10, 8); font-size: 22px;">Dependency Inversion Principle | Refactoring</span></p>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> nightmare;
+
+<span style="font-style: italic">// low-level class for handling item selection</span>
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">ItemSelector</span> {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> selectItem(String item) {
+        System.out.println(<span style="font-style: italic">&quot;item selected: &quot;</span> + item);
+        <span style="font-weight: bold">if</span> (item.equalsIgnoreCase(<span style="font-style: italic">&quot;shake&quot;</span>)) {
+            <span style="font-weight: bold">try</span> {
+                selectShake();
+            } <span style="font-weight: bold">catch</span> (Exception e) {
+                System.out.println(<span style="font-style: italic">&quot;shake selection failed: &quot;</span> + e.getMessage());
+            }
+        }
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> selectShake() {
+        System.out.println(<span style="font-style: italic">&quot;selecting shake.&quot;</span>);
+        <span style="font-weight: bold">if</span> (Math.random() &gt; 0.5) {
+            <span style="font-weight: bold">throw</span> <span style="font-weight: bold">new</span> RuntimeException(<span style="font-style: italic">&quot;failed to select shake due to system error.&quot;</span>);
+        }
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> nightmare;
+
+<span style="font-style: italic">// low-level class for handling orders</span>
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">OrderProcessor</span> {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> processOrder(String item, <span style="font-weight: bold">double</span> price) {
+        System.out.println(<span style="font-style: italic">&quot;order processed: &quot;</span> + item + <span style="font-style: italic">&quot; for &quot;</span> + price);
+        <span style="font-weight: bold">if</span> (price &gt; 2.0) {
+            <span style="font-weight: bold">try</span> {
+                processSpecialOrder(item, price);
+            } <span style="font-weight: bold">catch</span> (Exception e) {
+                System.out.println(<span style="font-style: italic">&quot;special order processing failed: &quot;</span> + e.getMessage());
+            }
+        }
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> processSpecialOrder(String item, <span style="font-weight: bold">double</span> price) {
+        System.out.println(<span style="font-style: italic">&quot;processing special order for &quot;</span> + item);
+        <span style="font-weight: bold">if</span> (Math.random() &gt; 0.5) {
+            <span style="font-weight: bold">throw</span> <span style="font-weight: bold">new</span> RuntimeException(<span style="font-style: italic">&quot;error processing special order.&quot;</span>);
+        }
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> nightmare;
+
+<span style="font-style: italic">// low-level class for handling payments</span>
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">PaymentProcessor</span> {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> processPayment(<span style="font-weight: bold">double</span> amount) {
+        System.out.println(<span style="font-style: italic">&quot;payment processed: &quot;</span> + amount);
+        <span style="font-weight: bold">if</span> (amount &gt; 10.0) {
+            <span style="font-weight: bold">try</span> {
+                handleHighValuePayment(amount);
+            } <span style="font-weight: bold">catch</span> (Exception e) {
+                System.out.println(<span style="font-style: italic">&quot;high-value payment handling failed: &quot;</span> + e.getMessage());
+            }
+        }
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> handleHighValuePayment(<span style="font-weight: bold">double</span> amount) {
+        System.out.println(<span style="font-style: italic">&quot;handling high-value payment of &quot;</span> + amount);
+        <span style="font-weight: bold">if</span> (Math.random() &gt; 0.5) {
+            <span style="font-weight: bold">throw</span> <span style="font-weight: bold">new</span> RuntimeException(<span style="font-style: italic">&quot;error handling high-value payment.&quot;</span>);
+        }
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> nightmare;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">SelfServiceTerminal</span> {
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> ItemSelector itemSelector = <span style="font-weight: bold">new</span> ItemSelector();
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> OrderProcessor orderProcessor = <span style="font-weight: bold">new</span> OrderProcessor();
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> PaymentProcessor paymentProcessor = <span style="font-weight: bold">new</span> PaymentProcessor();
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">double</span> totalAmount = 0;
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> selectItem(String item) {
+        <span style="font-weight: bold">try</span> {
+            itemSelector.selectItem(item);
+        } <span style="font-weight: bold">catch</span> (Exception e) {
+            System.out.println(<span style="font-style: italic">&quot;failed to select item: &quot;</span> + e.getMessage());
+        }
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> orderItem(String item) {
+        <span style="font-weight: bold">double</span> itemPrice = getItemPrice(item);
+        <span style="font-weight: bold">try</span> {
+            orderProcessor.processOrder(item, itemPrice);
+            totalAmount += itemPrice;
+        } <span style="font-weight: bold">catch</span> (Exception e) {
+            System.out.println(<span style="font-style: italic">&quot;failed to process order: &quot;</span> + e.getMessage());
+        }
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> processPayment(<span style="font-weight: bold">double</span> amount) {
+        <span style="font-weight: bold">if</span> (amount &lt; totalAmount) {
+            System.out.println(<span style="font-style: italic">&quot;insufficient payment. please pay &quot;</span> + (totalAmount - amount));
+        } <span style="font-weight: bold">else</span> <span style="font-weight: bold">if</span> (amount &gt; totalAmount) {
+            System.out.println(<span style="font-style: italic">&quot;error: excessive payment amount.&quot;</span>);
+        } <span style="font-weight: bold">else</span> {
+            <span style="font-weight: bold">try</span> {
+                paymentProcessor.processPayment(amount);
+                totalAmount = 0;
+            } <span style="font-weight: bold">catch</span> (Exception e) {
+                System.out.println(<span style="font-style: italic">&quot;payment processing error: &quot;</span> + e.getMessage());
+            }
+        }
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">double</span> getItemPrice(String item) {
+        <span style="font-weight: bold">return</span> switch (item.toLowerCase()) {
+            <span style="font-weight: bold">case</span> <span style="font-style: italic">&quot;burger&quot;</span> -&gt; 5.0;
+            <span style="font-weight: bold">case</span> <span style="font-style: italic">&quot;fries&quot;</span> -&gt; 2.0;
+            <span style="font-weight: bold">case</span> <span style="font-style: italic">&quot;shake&quot;</span> -&gt; 3.0;
+            <span style="font-weight: bold">default</span> -&gt; <span style="font-weight: bold">throw</span> <span style="font-weight: bold">new</span> IllegalArgumentException(<span style="font-style: italic">&quot;invalid item.&quot;</span>);
+        };
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Prof. Dr. Carsten M&uuml;ller <span style="color: rgb(166, 10, 8);">|</span> Software Engineering</span></p>

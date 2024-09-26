@@ -1,0 +1,183 @@
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; color: rgb(166, 10, 8); font-size: 22px;">Pizza Vending Machine | Test | Cucumber</span></p>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">Feature:</span> Pizza Vending Machine
+
+  <span style="font-weight: bold">Scenario:</span> Selecting a pizza and processing payment
+<span style="font-weight: bold">    Given </span>the pizza vending machine is idle
+    <span style="font-weight: bold">When </span>the user selects a &lt;pizzaType&gt; pizza of &lt;pizzaSize&gt; size with &lt;crustType&gt; crust
+    <span style="font-weight: bold">And </span>adds the pizza to the cart
+    <span style="font-weight: bold">And </span>proceeds to payment
+    <span style="font-weight: bold">Then </span>the total should be calculated correctly
+    <span style="font-weight: bold">And </span>the payment should be processed successfully
+    <span style="font-weight: bold">And </span>the pizza should be dispensed
+
+  <span style="font-weight: bold">Examples:</span>
+<span style="font-weight: bold">    |</span> pizzaType<span style="font-weight: bold">   |</span> pizzaSize<span style="font-weight: bold"> |</span> crustType<span style="font-weight: bold"> |</span> total<span style="font-weight: bold">  |</span>
+<span style="font-weight: bold">    |</span><span style="font-style: italic"> PEPPERONI</span><span style="font-weight: bold">   |</span><span style="font-style: italic"> MEDIUM</span><span style="font-weight: bold">    |</span><span style="font-style: italic"> THICK</span><span style="font-weight: bold">     |</span><span style="font-style: italic"> 15.00</span><span style="font-weight: bold">  |</span>
+<span style="font-weight: bold">    |</span><span style="font-style: italic"> MARGHERITA</span><span style="font-weight: bold">  |</span><span style="font-style: italic"> SMALL</span><span style="font-weight: bold">     |</span><span style="font-style: italic"> THIN</span><span style="font-weight: bold">      |</span><span style="font-style: italic"> 10.00</span><span style="font-weight: bold">  |</span>
+</pre></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> cucumber.stepdefs;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">io.cucumber.java.ParameterType</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">io.cucumber.java.en.Given</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">io.cucumber.java.en.Then</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">io.cucumber.java.en.When</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">model.*</span>;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">static</span> org.junit.jupiter.api.Assertions.assertTrue;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">PizzaVendingMachineSteps</span> {
+    <span style="font-weight: bold">private</span> PizzaVendingMachine machine;
+    <span style="font-weight: bold">private</span> Cart cart;
+    <span style="font-weight: bold">private</span> Pizza selectedPizza;
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">double</span> totalPrice;
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">boolean</span> paymentSuccess;
+
+    @Given(<span style="font-style: italic">&quot;the pizza vending machine is idle&quot;</span>)
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> thePizzaVendingMachineIsIdle() {
+        machine = <span style="font-weight: bold">new</span> PizzaVendingMachine();
+        cart = <span style="font-weight: bold">new</span> Cart();
+        machine.setState(MachineState.IDLE);
+    }
+
+    @When(<span style="font-style: italic">&quot;the user selects a {pizzaType} pizza of {pizzaSize} size with {crustType} crust&quot;</span>)
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> theUserSelectsAPizzaOfSizeWithCrust(PizzaType pizzaType, PizzaSize pizzaSize, CrustType crustType) {
+        selectedPizza = machine.selectPizza(pizzaType, pizzaSize, crustType);
+    }
+
+    @When(<span style="font-style: italic">&quot;adds the pizza to the cart&quot;</span>)
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> addsThePizzaToTheCart() {
+        machine.addToCart(cart, selectedPizza);
+    }
+
+    @When(<span style="font-style: italic">&quot;proceeds to payment&quot;</span>)
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> proceedsToPayment() {
+        Payment payment = <span style="font-weight: bold">new</span> Payment(PaymentMethod.CREDIT_CARD, cart.calculateTotal());
+        paymentSuccess = machine.processPayment(payment);
+    }
+
+    @Then(<span style="font-style: italic">&quot;the total should be calculated correctly&quot;</span>)
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> theTotalPriceShouldBeCalculatedCorrectly() {
+        totalPrice = machine.calculateTotal(cart);
+    }
+
+    @Then(<span style="font-style: italic">&quot;the payment should be processed successfully&quot;</span>)
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> thePaymentShouldBeProcessedSuccessfully() {
+        assertTrue(paymentSuccess);
+    }
+
+    @Then(<span style="font-style: italic">&quot;the pizza should be dispensed&quot;</span>)
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> thePizzaShouldBeDispensed() {
+        machine.dispensePizza();
+    }
+
+    @ParameterType(<span style="font-style: italic">&quot;PEPPERONI|MARGHERITA&quot;</span>)
+    <span style="font-weight: bold">public</span> PizzaType pizzaType(String pizzaType) {
+        <span style="font-weight: bold">return</span> PizzaType.valueOf(pizzaType);
+    }
+
+    @ParameterType(<span style="font-style: italic">&quot;SMALL|MEDIUM|LARGE&quot;</span>)
+    <span style="font-weight: bold">public</span> PizzaSize pizzaSize(String pizzaSize) {
+        <span style="font-weight: bold">return</span> PizzaSize.valueOf(pizzaSize);
+    }
+
+    @ParameterType(<span style="font-style: italic">&quot;THIN|THICK&quot;</span>)
+    <span style="font-weight: bold">public</span> CrustType crustType(String crustType) {
+        <span style="font-weight: bold">return</span> CrustType.valueOf(crustType);
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> cucumber;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">io.cucumber.junit.Cucumber</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">io.cucumber.junit.CucumberOptions</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">org.junit.runner.RunWith</span>;
+
+@RunWith(Cucumber.class)
+@CucumberOptions(features = <span style="font-style: italic">&quot;src/test/resources/features&quot;</span>, glue = <span style="font-style: italic">&quot;cucumber.stepdefs&quot;</span>)
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">TestApplication</span> {
+}
+</pre></td></tr></table></div>
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Prof. Dr. Carsten M&uuml;ller <span style="color: rgb(166, 10, 8);">|</span> Software Engineering</span></p>

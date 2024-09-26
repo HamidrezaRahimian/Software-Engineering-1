@@ -1,0 +1,208 @@
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; color: rgb(166, 10, 8); font-size: 22px;">Single Responsibility Principle | good</span></p>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3
+4
+5
+6
+7</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">interface</span> <span style="font-weight: bold">IConnection</span> {
+    <span style="font-weight: bold">void</span> dial(String phoneNumber);
+
+    <span style="font-weight: bold">void</span> disconnect();
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">ConnectionManager</span> <span style="font-weight: bold">implements</span> IConnection {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> dial(String phoneNumber) {
+        System.out.println(<span style="font-style: italic">&quot;connected successfully&quot;</span>);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> disconnect() {
+        System.out.println(<span style="font-style: italic">&quot;disconnection successfully&quot;</span>);
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3
+4
+5
+6
+7</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">interface</span> <span style="font-weight: bold">IDataChannel</span> {
+    <span style="font-weight: bold">void</span> send(<span style="font-weight: bold">char</span> character);
+
+    <span style="font-weight: bold">char</span> receive();
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">DataChannelSlowMode</span> <span style="font-weight: bold">implements</span> IDataChannel {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> send(<span style="font-weight: bold">char</span> character) {
+        System.out.println(<span style="font-style: italic">&quot;sent data using slow algorithm&quot;</span>);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">char</span> receive() {
+        System.out.println(<span style="font-style: italic">&quot;received data using slow algorithm&quot;</span>);
+        <span style="font-weight: bold">return</span> 0;
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">DataChannelFastMode</span> <span style="font-weight: bold">implements</span> IDataChannel {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> send(<span style="font-weight: bold">char</span> character) {
+        System.out.println(<span style="font-style: italic">&quot;sent data using fast algorithm&quot;</span>);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">char</span> receive() {
+        System.out.println(<span style="font-style: italic">&quot;received data using fast algorithm&quot;</span>);
+        <span style="font-weight: bold">return</span> 0;
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">Modem</span> <span style="font-weight: bold">implements</span> IConnection, IDataChannel {
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> IConnection connection;
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> IDataChannel dataChannel;
+
+    <span style="font-weight: bold">public</span> Modem(IConnection connection, IDataChannel dataChannel) {
+        <span style="font-weight: bold">this</span>.connection = connection;
+        <span style="font-weight: bold">this</span>.dataChannel = dataChannel;
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> dial(String phoneNumber) {
+        connection.dial(phoneNumber);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> disconnect() {
+        connection.disconnect();
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> send(<span style="font-weight: bold">char</span> character) {
+        dataChannel.send(character);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">char</span> receive() {
+        <span style="font-weight: bold">return</span> dataChannel.receive();
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">ModemSlowClient</span> {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">static</span> <span style="font-weight: bold">void</span> main(String... args) {
+        Modem modem = <span style="font-weight: bold">new</span> Modem(<span style="font-weight: bold">new</span> ConnectionManager(), <span style="font-weight: bold">new</span> DataChannelSlowMode());
+        modem.dial(<span style="font-style: italic">&quot;0000000000&quot;</span>);
+        modem.send(<span style="font-style: italic">&#39;t&#39;</span>);
+        modem.receive();
+        modem.disconnect();
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">ModemFastClient</span> {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">static</span> <span style="font-weight: bold">void</span> main(String... args) {
+        Modem modem = <span style="font-weight: bold">new</span> Modem(<span style="font-weight: bold">new</span> ConnectionManager(), <span style="font-weight: bold">new</span> DataChannelFastMode());
+        modem.dial(<span style="font-style: italic">&quot;0000000000&quot;</span>);
+        modem.send(<span style="font-style: italic">&#39;t&#39;</span>);
+        modem.receive();
+        modem.disconnect();
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Prof. Dr. Carsten M&uuml;ller <span style="color: rgb(166, 10, 8);">|</span> Software Engineering</span></p>

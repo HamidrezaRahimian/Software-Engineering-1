@@ -1,0 +1,155 @@
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; color: rgb(166, 10, 8); font-size: 22px;">Single Responsibility Principle | bad</span></p>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> bad;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">interface</span> <span style="font-weight: bold">IModem</span> {
+    <span style="font-weight: bold">void</span> dial(String phoneNumber);
+
+    <span style="font-weight: bold">void</span> disconnect();
+
+    <span style="font-weight: bold">void</span> send(<span style="font-weight: bold">char</span> character);
+
+    <span style="font-weight: bold">char</span> receive();
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> bad;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">ModemSlow</span> <span style="font-weight: bold">implements</span> IModem {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> dial(String phoneNumber) {
+        System.out.println(<span style="font-style: italic">&quot;connected successfully&quot;</span>);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> disconnect() {
+        System.out.println(<span style="font-style: italic">&quot;disconnection successfully&quot;</span>);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> send(<span style="font-weight: bold">char</span> character) {
+        System.out.println(<span style="font-style: italic">&quot;data sent successfully using slow algorithms&quot;</span>);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">char</span> receive() {
+        System.out.println(<span style="font-style: italic">&quot;data received successfully using slow algorithms&quot;</span>);
+        <span style="font-weight: bold">return</span> 0;
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> bad;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">ModemFast</span> <span style="font-weight: bold">implements</span> IModem {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> dial(String phoneNumber) {
+        System.out.println(<span style="font-style: italic">&quot;connected successfully&quot;</span>);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> disconnect() {
+        System.out.println(<span style="font-style: italic">&quot;disconnection successfully&quot;</span>);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> send(<span style="font-weight: bold">char</span> character) {
+        System.out.println(<span style="font-style: italic">&quot;data sent successfully using fast algorithms&quot;</span>);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">char</span> receive() {
+        System.out.println(<span style="font-style: italic">&quot;data received successfully using fast algorithms&quot;</span>);
+        <span style="font-weight: bold">return</span> 0;
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> bad;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">ModemSlowClient</span> {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">static</span> <span style="font-weight: bold">void</span> main(String... args) {
+        IModem slowModem = <span style="font-weight: bold">new</span> ModemSlow();
+        slowModem.dial(<span style="font-style: italic">&quot;0000000000&quot;</span>);
+        slowModem.send(<span style="font-style: italic">&#39;t&#39;</span>);
+        slowModem.receive();
+        slowModem.disconnect();
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> bad;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">ModemFastClient</span> {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">static</span> <span style="font-weight: bold">void</span> main(String... args) {
+        IModem fastModem = <span style="font-weight: bold">new</span> ModemFast();
+        fastModem.dial(<span style="font-style: italic">&quot;0000000000&quot;</span>);
+        fastModem.send(<span style="font-style: italic">&#39;t&#39;</span>);
+        fastModem.receive();
+        fastModem.disconnect();
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Prof. Dr. Carsten M&uuml;ller <span style="color: rgb(166, 10, 8);">|</span> Software Engineering</span></p>

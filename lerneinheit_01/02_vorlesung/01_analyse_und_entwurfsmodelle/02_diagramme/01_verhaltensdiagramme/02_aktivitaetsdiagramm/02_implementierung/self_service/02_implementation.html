@@ -1,0 +1,333 @@
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; color: rgb(166, 10, 8); font-size: 22px;">Activity Diagram | Self-Service Desk</span></p>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3
+4
+5
+6
+7</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.Data</span>;
+
+@Data
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">MenuItem</span> {
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> String name;
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> <span style="font-weight: bold">double</span> price;
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.Data</span>;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">java.util.ArrayList</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">java.util.List</span>;
+
+@Data
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">Order</span> {
+    <span style="font-weight: bold">private</span> List&lt;MenuItem&gt; items = <span style="font-weight: bold">new</span> ArrayList&lt;&gt;();
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">double</span> totalAmount;
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> addItem(MenuItem item) {
+        items.add(item);
+        totalAmount += item.getPrice();
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.Getter</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.extern.slf4j.Slf4j</span>;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">java.util.concurrent.ExecutorService</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">java.util.concurrent.Executors</span>;
+
+@Slf4j
+@Getter
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">SelfServiceDesk</span> {
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> Order order = <span style="font-weight: bold">new</span> Order();
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">boolean</span> orderReviewed = <span style="font-weight: bold">false</span>;
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">boolean</span> paymentProcessed = <span style="font-weight: bold">false</span>;
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">boolean</span> isCompleted = <span style="font-weight: bold">false</span>;
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> startOrder() {
+        log.info(<span style="font-style: italic">&quot;starting the order process.&quot;</span>);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> selectItem(MenuItem item) {
+        log.info(<span style="font-style: italic">&quot;selected item: {}&quot;</span>, item.getName());
+        order.addItem(item);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> reviewOrder() {
+        <span style="font-weight: bold">if</span> (order.getItems().isEmpty()) {
+            log.error(<span style="font-style: italic">&quot;order cannot be reviewed because no items were selected.&quot;</span>);
+        } <span style="font-weight: bold">else</span> {
+            log.info(<span style="font-style: italic">&quot;reviewing the order with total: {}&quot;</span>, order.getTotalAmount());
+            orderReviewed = <span style="font-weight: bold">true</span>;
+        }
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> processPayment() {
+        <span style="font-weight: bold">if</span> (!orderReviewed) {
+            log.error(<span style="font-style: italic">&quot;payment cannot be processed before reviewing the order.&quot;</span>);
+        } <span style="font-weight: bold">else</span> {
+            log.info(<span style="font-style: italic">&quot;processing payment for amount: {}&quot;</span>, order.getTotalAmount());
+            paymentProcessed = <span style="font-weight: bold">true</span>;
+        }
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> finalizeOrder() {
+        <span style="font-weight: bold">if</span> (!paymentProcessed) {
+            log.error(<span style="font-style: italic">&quot;cannot finalize order without processing payment.&quot;</span>);
+        } <span style="font-weight: bold">else</span> {
+            ExecutorService executorService = Executors.newFixedThreadPool(2);
+
+            <span style="font-style: italic">// parallel tasks</span>
+            executorService.submit(<span style="font-weight: bold">this</span>::deliverOrder);
+            executorService.submit(<span style="font-weight: bold">this</span>::confirmOrder);
+
+            executorService.shutdown();
+            isCompleted = <span style="font-weight: bold">true</span>;
+        }
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> deliverOrder() {
+        log.info(<span style="font-style: italic">&quot;delivering the order.&quot;</span>);
+        <span style="font-weight: bold">try</span> {
+            Thread.sleep(2000);
+        } <span style="font-weight: bold">catch</span> (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        log.info(<span style="font-style: italic">&quot;order delivered successfully.&quot;</span>);
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> confirmOrder() {
+        log.info(<span style="font-style: italic">&quot;confirming the order.&quot;</span>);
+        <span style="font-weight: bold">try</span> {
+            Thread.sleep(1000);
+        } <span style="font-weight: bold">catch</span> (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        log.info(<span style="font-style: italic">&quot;order confirmed successfully.&quot;</span>);
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">Application</span> {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">static</span> <span style="font-weight: bold">void</span> main(String... args) {
+        SelfServiceDesk desk = <span style="font-weight: bold">new</span> SelfServiceDesk();
+
+        MenuItem burger = <span style="font-weight: bold">new</span> MenuItem(<span style="font-style: italic">&quot;Burger&quot;</span>, 5.99);
+        MenuItem fries = <span style="font-weight: bold">new</span> MenuItem(<span style="font-style: italic">&quot;Fries&quot;</span>, 2.99);
+
+        desk.startOrder();
+        desk.selectItem(burger);
+        desk.selectItem(fries);
+        desk.reviewOrder();
+        desk.processPayment();
+        desk.finalizeOrder();
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">import</span> <span style="font-weight: bold">org.junit.jupiter.api.MethodOrderer</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">org.junit.jupiter.api.Order</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">org.junit.jupiter.api.Test</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">org.junit.jupiter.api.TestMethodOrder</span>;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">static</span> org.junit.jupiter.api.Assertions.*;
+
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">TestApplication</span> {
+    @Test
+    @Order(1)
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> processFlow() {
+        SelfServiceDesk desk = <span style="font-weight: bold">new</span> SelfServiceDesk();
+
+        MenuItem burger = <span style="font-weight: bold">new</span> MenuItem(<span style="font-style: italic">&quot;Burger&quot;</span>, 5.99);
+        MenuItem fries = <span style="font-weight: bold">new</span> MenuItem(<span style="font-style: italic">&quot;Fries&quot;</span>, 2.99);
+
+        desk.startOrder();
+        assertFalse(desk.isCompleted());
+
+        desk.selectItem(burger);
+        desk.selectItem(fries);
+        assertEquals(2, desk.getOrder().getItems().size());
+
+        desk.reviewOrder();
+        assertFalse(desk.isCompleted());
+
+        desk.processPayment();
+        assertFalse(desk.isCompleted());
+
+        desk.finalizeOrder();
+        assertTrue(desk.isCompleted());
+    }
+
+    @Test
+    @Order(2)
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> invalidProcessFlow() {
+        SelfServiceDesk desk = <span style="font-weight: bold">new</span> SelfServiceDesk();
+
+        desk.processPayment();
+        assertFalse(desk.isCompleted());
+
+        MenuItem shake = <span style="font-weight: bold">new</span> MenuItem(<span style="font-style: italic">&quot;Shake&quot;</span>, 3.49);
+
+        desk.selectItem(shake);
+        desk.processPayment();
+        assertFalse(desk.isCompleted());
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Prof. Dr. Carsten M&uuml;ller <span style="color: rgb(166, 10, 8);">|</span> Software Engineering</span></p>

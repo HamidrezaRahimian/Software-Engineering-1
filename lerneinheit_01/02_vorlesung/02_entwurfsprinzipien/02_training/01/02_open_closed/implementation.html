@@ -1,0 +1,323 @@
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; color: rgb(166, 10, 8); font-size: 22px;">Open-Closed Principle | Refactoring</span></p>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3
+4
+5</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> nightmare;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">enum</span> PaymentMethod {
+    CASH, CARD, APPLE_PAY, GOOGLE_PAY, PAYPAL
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
+ 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> nightmare;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">java.util.Random</span>;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">SelfServiceTerminal</span> {
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">double</span> totalAmount;
+    <span style="font-weight: bold">private</span> PaymentMethod selectedPaymentMethod;
+
+    <span style="font-weight: bold">public</span> SelfServiceTerminal(<span style="font-weight: bold">double</span> totalAmount) {
+        <span style="font-weight: bold">this</span>.totalAmount = totalAmount;
+    }
+
+    <span style="font-weight: bold">public</span> String processPayment(PaymentMethod paymentMethod) {
+        <span style="font-weight: bold">this</span>.selectedPaymentMethod = paymentMethod;
+
+        <span style="font-weight: bold">double</span> processingFee = 0;
+        <span style="font-weight: bold">double</span> discount = 0;
+        <span style="font-weight: bold">double</span> finalAmount = totalAmount;
+
+        <span style="font-weight: bold">switch</span> (paymentMethod) {
+            <span style="font-weight: bold">case</span> CASH:
+                processingFee = totalAmount * 0.02;                     <span style="font-style: italic">// regular fee</span>
+                discount = totalAmount * 0.05;                          <span style="font-style: italic">// regular discount</span>
+                <span style="font-weight: bold">if</span> (totalAmount &gt; 100) {
+                    discount += totalAmount * 0.03;                     <span style="font-style: italic">// high amount discount</span>
+                    <span style="font-weight: bold">if</span> (totalAmount &gt; 200) {
+                        discount += totalAmount * 0.02;                 <span style="font-style: italic">// additional discount</span>
+                        <span style="font-weight: bold">if</span> (totalAmount &gt; 300) {
+                            finalAmount -= totalAmount * 0.05;          <span style="font-style: italic">// extra discount</span>
+                        }
+                    }
+                } <span style="font-weight: bold">else</span> <span style="font-weight: bold">if</span> (totalAmount &lt; 10) {
+                    finalAmount += 5;                                   <span style="font-style: italic">// surcharge for low amount</span>
+                }
+                <span style="font-weight: bold">if</span> (totalAmount &gt; 50) {
+                    <span style="font-weight: bold">if</span> (<span style="font-weight: bold">new</span> Random().nextBoolean()) {
+                        finalAmount -= <span style="font-weight: bold">new</span> Random().nextDouble() * 10; <span style="font-style: italic">// random adjustment</span>
+                        <span style="font-weight: bold">if</span> (finalAmount &lt; 0) {
+                            finalAmount += 10;                         <span style="font-style: italic">// handling negative amount</span>
+                        }
+                    }
+                }
+                <span style="font-weight: bold">break</span>;
+
+            <span style="font-weight: bold">case</span> CARD:
+                processingFee = totalAmount * 0.02;                    <span style="font-style: italic">// regular fee</span>
+                discount = totalAmount * 0.05;                         <span style="font-style: italic">// regular discount</span>
+                <span style="font-weight: bold">if</span> (totalAmount &gt; 500) {
+                    finalAmount += 15;                                 <span style="font-style: italic">// premium card fee</span>
+                    <span style="font-weight: bold">if</span> (totalAmount &gt; 1000) {
+                        discount += totalAmount * 0.1;                 <span style="font-style: italic">// card special discount</span>
+                    }
+                }
+                <span style="font-weight: bold">if</span> (<span style="font-weight: bold">new</span> Random().nextBoolean()) {
+                    <span style="font-weight: bold">if</span> (totalAmount &gt; 200) {
+                        finalAmount += 20;                             <span style="font-style: italic">// special handling for card</span>
+                        <span style="font-weight: bold">if</span> (finalAmount &gt; 300) {
+                            finalAmount -= 10;                         <span style="font-style: italic">// high amount adjustment</span>
+                        }
+                    }
+                }
+                <span style="font-weight: bold">break</span>;
+
+            <span style="font-weight: bold">case</span> APPLE_PAY:
+                processingFee = totalAmount * 0.02;                    <span style="font-style: italic">// regular fee</span>
+                discount = totalAmount * 0.1;                          <span style="font-style: italic">// high amount discount</span>
+                <span style="font-weight: bold">if</span> (totalAmount &gt; 200) {
+                    finalAmount -= 20;                                 <span style="font-style: italic">// Apple Pay high amount discount</span>
+                    <span style="font-weight: bold">if</span> (totalAmount &gt; 400) {
+                        finalAmount += 10;                             <span style="font-style: italic">// additional Apple Pay charge</span>
+                    }
+                }
+                <span style="font-weight: bold">if</span> (<span style="font-weight: bold">new</span> Random().nextBoolean()) {
+                    <span style="font-weight: bold">if</span> (totalAmount &gt; 150) {
+                        finalAmount += 15;                             <span style="font-style: italic">// Apple Pay special handling</span>
+                        <span style="font-weight: bold">if</span> (finalAmount &gt; 250) {
+                            finalAmount -= 10;                         <span style="font-style: italic">// Apple Pay high amount adjustment</span>
+                        }
+                    }
+                }
+                <span style="font-weight: bold">break</span>;
+
+            <span style="font-weight: bold">case</span> GOOGLE_PAY:
+                processingFee = totalAmount * 0.02;                    <span style="font-style: italic">// regular fee</span>
+                discount = totalAmount * 0.05;                         <span style="font-style: italic">// regular discount</span>
+                <span style="font-weight: bold">if</span> (totalAmount &gt; 150) {
+                    finalAmount -= 15;                                 <span style="font-style: italic">// Google Pay high amount discount</span>
+                    <span style="font-weight: bold">if</span> (totalAmount &gt; 300) {
+                        finalAmount += 10;                             <span style="font-style: italic">// additional Google Pay charge</span>
+                    }
+                }
+                <span style="font-weight: bold">if</span> (<span style="font-weight: bold">new</span> Random().nextBoolean()) {
+                    <span style="font-weight: bold">if</span> (totalAmount &gt; 100) {
+                        finalAmount += 10;                             <span style="font-style: italic">// Google Pay special handling</span>
+                        <span style="font-weight: bold">if</span> (finalAmount &gt; 200) {
+                            finalAmount -= 15;                         <span style="font-style: italic">// Google Pay high amount adjustment</span>
+                        }
+                    }
+                }
+                <span style="font-weight: bold">break</span>;
+
+            <span style="font-weight: bold">case</span> PAYPAL:
+                processingFee = totalAmount * 0.02;                    <span style="font-style: italic">// regular fee</span>
+                discount = totalAmount * 0.1;                          <span style="font-style: italic">// high amount discount</span>
+                <span style="font-weight: bold">if</span> (totalAmount &gt; 500) {
+                    finalAmount -= 25;                                 <span style="font-style: italic">// PayPal high amount discount</span>
+                    <span style="font-weight: bold">if</span> (totalAmount &gt; 1000) {
+                        finalAmount += 20; <span style="font-style: italic">// Additional PayPal charge</span>
+                    }
+                }
+                <span style="font-weight: bold">if</span> (<span style="font-weight: bold">new</span> Random().nextBoolean()) {
+                    <span style="font-weight: bold">if</span> (totalAmount &gt; 300) {
+                        finalAmount += 20;                             <span style="font-style: italic">// PayPal special handling</span>
+                        <span style="font-weight: bold">if</span> (finalAmount &gt; 600) {
+                            finalAmount -= 25;                         <span style="font-style: italic">// PayPal high amount adjustment</span>
+                        }
+                    }
+                }
+                <span style="font-weight: bold">break</span>;
+
+            <span style="font-weight: bold">default</span>:
+                finalAmount = -1;                                      <span style="font-style: italic">// error state for unknown payment method</span>
+                <span style="font-weight: bold">break</span>;
+        }
+
+        finalAmount = Math.max(finalAmount, 0);                        <span style="font-style: italic">// ensure non-negative amount</span>
+        <span style="font-weight: bold">double</span> tax = finalAmount * 0.08;                               <span style="font-style: italic">// 8% tax</span>
+        <span style="font-weight: bold">double</span> totalWithTax = finalAmount + tax;
+        String receipt = <span style="font-style: italic">&quot;Receipt Details:\n&quot;</span>;
+        receipt += <span style="font-style: italic">&quot;Items purchased: [Details of items]\n&quot;</span>;
+        receipt += <span style="font-style: italic">&quot;Total amount: &quot;</span> + totalAmount + <span style="font-style: italic">&quot;\n&quot;</span>;
+        receipt += <span style="font-style: italic">&quot;Payment method: &quot;</span> + paymentMethod + <span style="font-style: italic">&quot;\n&quot;</span>;
+        receipt += <span style="font-style: italic">&quot;Processing fee: &quot;</span> + processingFee + <span style="font-style: italic">&quot;\n&quot;</span>;
+        receipt += <span style="font-style: italic">&quot;Discount applied: &quot;</span> + discount + <span style="font-style: italic">&quot;\n&quot;</span>;
+        receipt += <span style="font-style: italic">&quot;Tax: &quot;</span> + tax + <span style="font-style: italic">&quot;\n&quot;</span>;
+        receipt += <span style="font-style: italic">&quot;Total with tax: &quot;</span> + totalWithTax + <span style="font-style: italic">&quot;\n&quot;</span>;
+        receipt += <span style="font-style: italic">&quot;Transaction outcome: &quot;</span> + (finalAmount &gt;= 0 ? <span style="font-style: italic">&quot;SUCCESS&quot;</span> : <span style="font-style: italic">&quot;FAILURE&quot;</span>) + <span style="font-style: italic">&quot;\n&quot;</span>;
+        receipt += <span style="font-style: italic">&quot;Thank you for your purchase!\n&quot;</span>;
+
+        totalAmount = 0;
+        selectedPaymentMethod = <span style="font-weight: bold">null</span>;
+
+        <span style="font-weight: bold">return</span> receipt;
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3
+4
+5
+6
+7
+8</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> nightmare;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">Application</span> {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">static</span> <span style="font-weight: bold">void</span> main(String... args) {
+        SelfServiceTerminal selfServiceTerminal = <span style="font-weight: bold">new</span> SelfServiceTerminal(350.00);
+        System.out.println(selfServiceTerminal.processPayment(PaymentMethod.CARD));
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Prof. Dr. Carsten M&uuml;ller <span style="color: rgb(166, 10, 8);">|</span> Software Engineering</span></p>

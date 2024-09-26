@@ -1,0 +1,243 @@
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; color: rgb(166, 10, 8); font-size: 22px;">Anwendungsfalldiagramm | include und extend</span></p>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">public</span> <span style="font-weight: bold">abstract</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">UseCase</span> {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">abstract</span> <span style="font-weight: bold">void</span> execute();
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.RequiredArgsConstructor</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.extern.slf4j.Slf4j</span>;
+
+@Slf4j
+@RequiredArgsConstructor
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">PlaceOrder</span> <span style="font-weight: bold">extends</span> UseCase {
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> SelectPizza selectPizza;
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> AddToppings addToppings;
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> VerifyAvailability verifyAvailability;
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> execute() {
+        log.info(<span style="font-style: italic">&quot;placing order.&quot;</span>);
+        selectPizza.execute();                           <span style="font-style: italic">// &lt;&lt;include&gt;&gt;` relationship</span>
+        addToppings.execute();                           <span style="font-style: italic">// &lt;&lt;include&gt;&gt;` relationship</span>
+        verifyAvailability.execute();                    <span style="font-style: italic">// &lt;&lt;include&gt;&gt;` relationship</span>
+        log.info(<span style="font-style: italic">&quot;order placed successfully.&quot;</span>);
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3
+4
+5
+6
+7
+8
+9</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.extern.slf4j.Slf4j</span>;
+
+@Slf4j
+<span style="font-style: italic">// &lt;&lt;include&gt;&gt; relationship</span>
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">SelectPizza</span> <span style="font-weight: bold">extends</span> UseCase {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> execute() {
+        log.info(<span style="font-style: italic">&quot;selecting pizza.&quot;</span>);
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3
+4
+5
+6
+7
+8
+9</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.extern.slf4j.Slf4j</span>;
+
+@Slf4j
+<span style="font-style: italic">// &lt;&lt;include&gt;&gt; relationship</span>
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">AddToppings</span> <span style="font-weight: bold">extends</span> UseCase {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> execute() {
+        log.info(<span style="font-style: italic">&quot;adding toppings.&quot;</span>);
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3
+4
+5
+6
+7
+8
+9</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.extern.slf4j.Slf4j</span>;
+
+@Slf4j
+<span style="font-style: italic">// &lt;&lt;include&gt;&gt; relationship</span>
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">VerifyAvailability</span> <span style="font-weight: bold">extends</span> UseCase {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> execute() {
+        log.info(<span style="font-style: italic">&quot;verifying availability of selected items.&quot;</span>);
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.RequiredArgsConstructor</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.extern.slf4j.Slf4j</span>;
+
+@Slf4j
+@RequiredArgsConstructor
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">ProcessPayment</span> <span style="font-weight: bold">extends</span> UseCase {
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> ApplyDiscount applyDiscount;
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> HandlePaymentFailure handlePaymentFailure;
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> execute() {
+        log.info(<span style="font-style: italic">&quot;processing payment.&quot;</span>);
+        <span style="font-weight: bold">boolean</span> isPaymentSuccessful = <span style="font-weight: bold">true</span>;
+
+        <span style="font-weight: bold">if</span> (applyDiscount.isDiscountApplicable()) {       <span style="font-style: italic">// &lt;&lt;extend&gt;&gt; relationship</span>
+            applyDiscount.execute();
+        }
+
+        <span style="font-weight: bold">if</span> (!isPaymentSuccessful) {                       <span style="font-style: italic">// &lt;&lt;extend&gt;&gt; relationship</span>
+            handlePaymentFailure.execute();
+        } <span style="font-weight: bold">else</span> {
+            log.info(<span style="font-style: italic">&quot;payment processed successfully.&quot;</span>);
+        }
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.Data</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.EqualsAndHashCode</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.extern.slf4j.Slf4j</span>;
+
+@Slf4j
+@Data
+@EqualsAndHashCode(callSuper = <span style="font-weight: bold">true</span>)
+<span style="font-style: italic">// &lt;&lt;extend&gt;&gt; relationship</span>
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">ApplyDiscount</span> <span style="font-weight: bold">extends</span> UseCase {
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> <span style="font-weight: bold">boolean</span> isDiscountApplicable;
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> execute() {
+        <span style="font-weight: bold">if</span> (isDiscountApplicable) {
+            log.info(<span style="font-style: italic">&quot;applying discount.&quot;</span>);
+        }
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3
+4
+5
+6
+7
+8
+9</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.extern.slf4j.Slf4j</span>;
+
+@Slf4j
+<span style="font-style: italic">// &lt;&lt;extend&gt;&gt; relationship</span>
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">HandlePaymentFailure</span> <span style="font-weight: bold">extends</span> UseCase {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> execute() {
+        log.info(<span style="font-style: italic">&quot;handling payment failure.&quot;</span>);
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">Application</span> {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">static</span> <span style="font-weight: bold">void</span> main(String... args) {
+        SelectPizza selectPizza = <span style="font-weight: bold">new</span> SelectPizza();
+        AddToppings addToppings = <span style="font-weight: bold">new</span> AddToppings();
+        VerifyAvailability verifyAvailability = <span style="font-weight: bold">new</span> VerifyAvailability();
+
+        PlaceOrder placeOrder = <span style="font-weight: bold">new</span> PlaceOrder(selectPizza, addToppings, verifyAvailability);
+
+        ApplyDiscount applyDiscount = <span style="font-weight: bold">new</span> ApplyDiscount(<span style="font-weight: bold">true</span>);
+        HandlePaymentFailure handlePaymentFailure = <span style="font-weight: bold">new</span> HandlePaymentFailure();
+
+        ProcessPayment processPayment = <span style="font-weight: bold">new</span> ProcessPayment(applyDiscount, handlePaymentFailure);
+
+        placeOrder.execute();
+        processPayment.execute();
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Prof. Dr. Carsten M&uuml;ller <span style="color: rgb(166, 10, 8);">|</span> Software Engineering</span></p>

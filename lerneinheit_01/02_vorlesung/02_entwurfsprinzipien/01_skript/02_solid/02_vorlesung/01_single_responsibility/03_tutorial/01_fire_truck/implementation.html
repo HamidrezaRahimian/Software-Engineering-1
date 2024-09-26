@@ -1,0 +1,912 @@
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; color: rgb(166, 10, 8); font-size: 22px;">Single Responsibility Principle</span></p>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
+ 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> bad;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.Data</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.ToString</span>;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">java.util.ArrayList</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">java.util.List</span>;
+
+@Data
+@ToString
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">FireTruck</span> {
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">int</span> waterTank = 5000;
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">boolean</span> sirenOn = <span style="font-weight: bold">false</span>;
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">boolean</span> engineRunning = <span style="font-weight: bold">false</span>;
+    <span style="font-weight: bold">private</span> String gpsLocation = <span style="font-style: italic">&quot;unknown&quot;</span>;
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">boolean</span> radioOn = <span style="font-weight: bold">false</span>;
+    <span style="font-weight: bold">private</span> String radioChannel = <span style="font-style: italic">&quot;default&quot;</span>;
+    <span style="font-weight: bold">private</span> List&lt;String&gt; firefighters = <span style="font-weight: bold">new</span> ArrayList&lt;&gt;();
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">int</span> fuelLevel = 100;
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">boolean</span> needsOilChange = <span style="font-weight: bold">false</span>;
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">boolean</span> hasFireExtinguisher = <span style="font-weight: bold">true</span>;
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">boolean</span> hasFirstAidKit = <span style="font-weight: bold">true</span>;
+
+    <span style="font-style: italic">// vehicle operation methods</span>
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> startEngine() {
+        <span style="font-weight: bold">if</span> (engineRunning) {
+            System.out.println(<span style="font-style: italic">&quot;engine already running.&quot;</span>);
+        } <span style="font-weight: bold">else</span> {
+            engineRunning = <span style="font-weight: bold">true</span>;
+            System.out.println(<span style="font-style: italic">&quot;engine started.&quot;</span>);
+        }
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> stopEngine() {
+        <span style="font-weight: bold">if</span> (engineRunning) {
+            engineRunning = <span style="font-weight: bold">false</span>;
+            System.out.println(<span style="font-style: italic">&quot;engine stopped.&quot;</span>);
+        } <span style="font-weight: bold">else</span> {
+            System.out.println(<span style="font-style: italic">&quot;engine already off.&quot;</span>);
+        }
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> drive(String destination) {
+        <span style="font-weight: bold">if</span> (!engineRunning) {
+            System.out.println(<span style="font-style: italic">&quot;cannot drive. engine off.&quot;</span>);
+            <span style="font-weight: bold">return</span>;
+        }
+        <span style="font-weight: bold">if</span> (fuelLevel &lt;= 0) {
+            System.out.println(<span style="font-style: italic">&quot;cannot drive. fuel level empty.&quot;</span>);
+            <span style="font-weight: bold">return</span>;
+        }
+        System.out.println(<span style="font-style: italic">&quot;Driving to &quot;</span> + destination);
+        fuelLevel -= 10; <span style="font-style: italic">// Deduct fuel</span>
+        System.out.println(<span style="font-style: italic">&quot;Fuel level: &quot;</span> + fuelLevel + <span style="font-style: italic">&quot;%&quot;</span>);
+    }
+
+    <span style="font-style: italic">// firefighting operations methods</span>
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> activateSiren() {
+        <span style="font-weight: bold">if</span> (sirenOn) {
+            System.out.println(<span style="font-style: italic">&quot;siren already on.&quot;</span>);
+        } <span style="font-weight: bold">else</span> {
+            sirenOn = <span style="font-weight: bold">true</span>;
+            System.out.println(<span style="font-style: italic">&quot;siren activated.&quot;</span>);
+        }
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> deactivateSiren() {
+        <span style="font-weight: bold">if</span> (sirenOn) {
+            sirenOn = <span style="font-weight: bold">false</span>;
+            System.out.println(<span style="font-style: italic">&quot;siren deactivated.&quot;</span>);
+        } <span style="font-weight: bold">else</span> {
+            System.out.println(<span style="font-style: italic">&quot;siren already off.&quot;</span>);
+        }
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> fillWater(<span style="font-weight: bold">int</span> amount) {
+        <span style="font-weight: bold">if</span> (amount &gt; waterTank) {
+            System.out.println(<span style="font-style: italic">&quot;cannot fill more than &quot;</span> + waterTank + <span style="font-style: italic">&quot; liters.&quot;</span>);
+        } <span style="font-weight: bold">else</span> {
+            waterTank += amount;
+            System.out.println(<span style="font-style: italic">&quot;water tank filled with &quot;</span> + amount + <span style="font-style: italic">&quot; liters.&quot;</span>);
+        }
+    }
+
+    <span style="font-style: italic">// GPS methods</span>
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> setGpsLocation(String location) {
+        gpsLocation = location;
+        System.out.println(<span style="font-style: italic">&quot;GPS location set to &quot;</span> + location);
+    }
+
+    <span style="font-style: italic">// radio methods</span>
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> turnOnRadio() {
+        <span style="font-weight: bold">if</span> (radioOn) {
+            System.out.println(<span style="font-style: italic">&quot;radio already on.&quot;</span>);
+        } <span style="font-weight: bold">else</span> {
+            radioOn = <span style="font-weight: bold">true</span>;
+            System.out.println(<span style="font-style: italic">&quot;Radio turned on.&quot;</span>);
+        }
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> turnOffRadio() {
+        <span style="font-weight: bold">if</span> (radioOn) {
+            radioOn = <span style="font-weight: bold">false</span>;
+            System.out.println(<span style="font-style: italic">&quot;radio turned off.&quot;</span>);
+        } <span style="font-weight: bold">else</span> {
+            System.out.println(<span style="font-style: italic">&quot;radio is already off.&quot;</span>);
+        }
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> changeRadioChannel(String channel) {
+        radioChannel = channel;
+        System.out.println(<span style="font-style: italic">&quot;radio channel changed to &quot;</span> + channel);
+    }
+
+    <span style="font-style: italic">// firefighter crew management methods</span>
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> addFirefighter(String firefighter) {
+        firefighters.add(firefighter);
+        System.out.println(firefighter + <span style="font-style: italic">&quot; added to the crew.&quot;</span>);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> removeFirefighter(String firefighter) {
+        firefighters.remove(firefighter);
+        System.out.println(firefighter + <span style="font-style: italic">&quot; removed from the crew.&quot;</span>);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> listFirefighters() {
+        System.out.println(<span style="font-style: italic">&quot;current firefighters: &quot;</span> + String.join(<span style="font-style: italic">&quot;, &quot;</span>, firefighters));
+    }
+
+    <span style="font-style: italic">// maintenance and safety checks</span>
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> performMaintenanceCheck() {
+        <span style="font-weight: bold">if</span> (needsOilChange) {
+            System.out.println(<span style="font-style: italic">&quot;oil change required.&quot;</span>);
+        } <span style="font-weight: bold">else</span> {
+            System.out.println(<span style="font-style: italic">&quot;oil level is fine.&quot;</span>);
+        }
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> refillFuel(<span style="font-weight: bold">int</span> amount) {
+        <span style="font-weight: bold">if</span> (amount &gt; 100 - fuelLevel) {
+            System.out.println(<span style="font-style: italic">&quot;cannot refill more than needed.&quot;</span>);
+        } <span style="font-weight: bold">else</span> {
+            fuelLevel += amount;
+            System.out.println(<span style="font-style: italic">&quot;fuel level after refill: &quot;</span> + fuelLevel + <span style="font-style: italic">&quot;%&quot;</span>);
+        }
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> performSafetyCheck() {
+        System.out.println(<span style="font-style: italic">&quot;checking safety features...&quot;</span>);
+        <span style="font-weight: bold">if</span> (hasFireExtinguisher) {
+            System.out.println(<span style="font-style: italic">&quot;fire extinguisher is available.&quot;</span>);
+        } <span style="font-weight: bold">else</span> {
+            System.out.println(<span style="font-style: italic">&quot;no fire extinguisher.&quot;</span>);
+        }
+        <span style="font-weight: bold">if</span> (hasFirstAidKit) {
+            System.out.println(<span style="font-style: italic">&quot;first aid kit is available.&quot;</span>);
+        } <span style="font-weight: bold">else</span> {
+            System.out.println(<span style="font-style: italic">&quot;no first aid kit.&quot;</span>);
+        }
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<hr>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.Getter</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.Setter</span>;
+
+@Getter
+@Setter
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">Engine</span> {
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">boolean</span> running = <span style="font-weight: bold">false</span>;
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> start() {
+        <span style="font-weight: bold">if</span> (running) {
+            System.out.println(<span style="font-style: italic">&quot;engine already running.&quot;</span>);
+        } <span style="font-weight: bold">else</span> {
+            running = <span style="font-weight: bold">true</span>;
+            System.out.println(<span style="font-style: italic">&quot;engine started.&quot;</span>);
+        }
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> stop() {
+        <span style="font-weight: bold">if</span> (running) {
+            running = <span style="font-weight: bold">false</span>;
+            System.out.println(<span style="font-style: italic">&quot;engine stopped.&quot;</span>);
+        } <span style="font-weight: bold">else</span> {
+            System.out.println(<span style="font-style: italic">&quot;engine already off.&quot;</span>);
+        }
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.Getter</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.Setter</span>;
+
+@Getter
+@Setter
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">WaterTank</span> {
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">int</span> capacity = 5000;
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">int</span> currentLevel = 0;
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> fill(<span style="font-weight: bold">int</span> amount) {
+        <span style="font-weight: bold">if</span> (amount &gt; (capacity - currentLevel)) {
+            System.out.println(<span style="font-style: italic">&quot;cannot fill more than the tank&#39;s capacity.&quot;</span>);
+        } <span style="font-weight: bold">else</span> {
+            currentLevel += amount;
+            System.out.println(<span style="font-style: italic">&quot;water tank filled with &quot;</span> + amount + <span style="font-style: italic">&quot; liters. current level: &quot;</span> + currentLevel + <span style="font-style: italic">&quot; liters.&quot;</span>);
+        }
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.Getter</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.Setter</span>;
+
+@Getter
+@Setter
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">Siren</span> {
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">boolean</span> active = <span style="font-weight: bold">false</span>;
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> activate() {
+        <span style="font-weight: bold">if</span> (active) {
+            System.out.println(<span style="font-style: italic">&quot;siren already on.&quot;</span>);
+        } <span style="font-weight: bold">else</span> {
+            active = <span style="font-weight: bold">true</span>;
+            System.out.println(<span style="font-style: italic">&quot;siren activated.&quot;</span>);
+        }
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> deactivate() {
+        <span style="font-weight: bold">if</span> (active) {
+            active = <span style="font-weight: bold">false</span>;
+            System.out.println(<span style="font-style: italic">&quot;siren deactivated.&quot;</span>);
+        } <span style="font-weight: bold">else</span> {
+            System.out.println(<span style="font-style: italic">&quot;siren already off.&quot;</span>);
+        }
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.Getter</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.Setter</span>;
+
+@Getter
+@Setter
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">GPS</span> {
+    <span style="font-weight: bold">private</span> String location = <span style="font-style: italic">&quot;unknown&quot;</span>;
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> setLocation(String location) {
+        <span style="font-weight: bold">this</span>.location = location;
+        System.out.println(<span style="font-style: italic">&quot;GPS location set to &quot;</span> + location);
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.Getter</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.Setter</span>;
+
+@Getter
+@Setter
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">Radio</span> {
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">boolean</span> on = <span style="font-weight: bold">false</span>;
+    <span style="font-weight: bold">private</span> String channel = <span style="font-style: italic">&quot;default&quot;</span>;
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> turnOn() {
+        <span style="font-weight: bold">if</span> (on) {
+            System.out.println(<span style="font-style: italic">&quot;radio already on.&quot;</span>);
+        } <span style="font-weight: bold">else</span> {
+            on = <span style="font-weight: bold">true</span>;
+            System.out.println(<span style="font-style: italic">&quot;Radio turned on.&quot;</span>);
+        }
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> turnOff() {
+        <span style="font-weight: bold">if</span> (on) {
+            on = <span style="font-weight: bold">false</span>;
+            System.out.println(<span style="font-style: italic">&quot;radio turned off.&quot;</span>);
+        } <span style="font-weight: bold">else</span> {
+            System.out.println(<span style="font-style: italic">&quot;radio already off.&quot;</span>);
+        }
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> changeChannel(String channel) {
+        <span style="font-weight: bold">this</span>.channel = channel;
+        System.out.println(<span style="font-style: italic">&quot;radio channel changed to &quot;</span> + channel);
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">java.util.ArrayList</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">java.util.List</span>;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">CrewManager</span> {
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> List&lt;String&gt; firefighters = <span style="font-weight: bold">new</span> ArrayList&lt;&gt;();
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> addFirefighter(String firefighter) {
+        firefighters.add(firefighter);
+        System.out.println(firefighter + <span style="font-style: italic">&quot; added to the crew.&quot;</span>);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> removeFirefighter(String firefighter) {
+        firefighters.remove(firefighter);
+        System.out.println(firefighter + <span style="font-style: italic">&quot; removed from the crew.&quot;</span>);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> listFirefighters() {
+        System.out.println(<span style="font-style: italic">&quot;current firefighters: &quot;</span> + String.join(<span style="font-style: italic">&quot;, &quot;</span>, firefighters));
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.Getter</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.Setter</span>;
+
+@Getter
+@Setter
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">Maintenance</span> {
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">int</span> fuelLevel = 100;
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">boolean</span> needsOilChange = <span style="font-weight: bold">false</span>;
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> performCheck() {
+        <span style="font-weight: bold">if</span> (needsOilChange) {
+            System.out.println(<span style="font-style: italic">&quot;oil change required.&quot;</span>);
+        } <span style="font-weight: bold">else</span> {
+            System.out.println(<span style="font-style: italic">&quot;oil level fine.&quot;</span>);
+        }
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> refillFuel(<span style="font-weight: bold">int</span> amount) {
+        <span style="font-weight: bold">if</span> (amount &gt; (100 - fuelLevel)) {
+            System.out.println(<span style="font-style: italic">&quot;cannot refill more than needed.&quot;</span>);
+        } <span style="font-weight: bold">else</span> {
+            fuelLevel += amount;
+            System.out.println(<span style="font-style: italic">&quot;fuel level after refill: &quot;</span> + fuelLevel + <span style="font-style: italic">&quot;%&quot;</span>);
+        }
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.Getter</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.Setter</span>;
+
+@Getter
+@Setter
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">SafetyFeatures</span> {
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">boolean</span> hasFireExtinguisher = <span style="font-weight: bold">true</span>;
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">boolean</span> hasFirstAidKit = <span style="font-weight: bold">true</span>;
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> performCheck() {
+        System.out.println(<span style="font-style: italic">&quot;checking safety features.&quot;</span>);
+        <span style="font-weight: bold">if</span> (hasFireExtinguisher) {
+            System.out.println(<span style="font-style: italic">&quot;fire extinguisher available.&quot;</span>);
+        } <span style="font-weight: bold">else</span> {
+            System.out.println(<span style="font-style: italic">&quot;no fire extinguisher.&quot;</span>);
+        }
+        <span style="font-weight: bold">if</span> (hasFirstAidKit) {
+            System.out.println(<span style="font-style: italic">&quot;first aid kit available.&quot;</span>);
+        } <span style="font-weight: bold">else</span> {
+            System.out.println(<span style="font-style: italic">&quot;no first aid kit.&quot;</span>);
+        }
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">FireTruck</span> {
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> Engine engine = <span style="font-weight: bold">new</span> Engine();
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> WaterTank waterTank = <span style="font-weight: bold">new</span> WaterTank();
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> Siren siren = <span style="font-weight: bold">new</span> Siren();
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> GPS gps = <span style="font-weight: bold">new</span> GPS();
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> Radio radio = <span style="font-weight: bold">new</span> Radio();
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> CrewManager crewManager = <span style="font-weight: bold">new</span> CrewManager();
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> Maintenance maintenance = <span style="font-weight: bold">new</span> Maintenance();
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> SafetyFeatures safetyFeatures = <span style="font-weight: bold">new</span> SafetyFeatures();
+
+    <span style="font-style: italic">// delegating operations to appropriate classes</span>
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> startEngine() {
+        engine.start();
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> stopEngine() {
+        engine.stop();
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> drive(String destination) {
+        <span style="font-weight: bold">if</span> (engine.isRunning()) {
+            <span style="font-weight: bold">if</span> (maintenance.getFuelLevel() &gt; 0) {
+                System.out.println(<span style="font-style: italic">&quot;driving to &quot;</span> + destination);
+                maintenance.refillFuel(-10);
+            } <span style="font-weight: bold">else</span> {
+                System.out.println(<span style="font-style: italic">&quot;cannot drive. fuel level is empty.&quot;</span>);
+            }
+        } <span style="font-weight: bold">else</span> {
+            System.out.println(<span style="font-style: italic">&quot;cannot drive. engine is off.&quot;</span>);
+        }
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> activateSiren() {
+        siren.activate();
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> deactivateSiren() {
+        siren.deactivate();
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> fillWater(<span style="font-weight: bold">int</span> amount) {
+        waterTank.fill(amount);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> setGpsLocation(String location) {
+        gps.setLocation(location);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> turnOnRadio() {
+        radio.turnOn();
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> turnOffRadio() {
+        radio.turnOff();
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> changeRadioChannel(String channel) {
+        radio.changeChannel(channel);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> addFirefighter(String firefighter) {
+        crewManager.addFirefighter(firefighter);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> removeFirefighter(String firefighter) {
+        crewManager.removeFirefighter(firefighter);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> listFirefighters() {
+        crewManager.listFirefighters();
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> performMaintenanceCheck() {
+        maintenance.performCheck();
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> refillFuel(<span style="font-weight: bold">int</span> amount) {
+        maintenance.refillFuel(amount);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> performSafetyCheck() {
+        safetyFeatures.performCheck();
+    }
+}
+</pre></td></tr></table></div>
+<br>
+
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Prof. Dr. Carsten M&uuml;ller <span style="color: rgb(166, 10, 8);">|</span> Software Engineering</span></p>

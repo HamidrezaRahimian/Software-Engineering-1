@@ -1,0 +1,65 @@
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; color: rgb(166, 10, 8); font-size: 22px;">Dependency Inversion Principle | bad</span></p>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> bad;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">User</span> {
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">int</span> id;
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">int</span> getID() {
+        <span style="font-weight: bold">return</span> id;
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> setID(<span style="font-weight: bold">int</span> id) {
+        <span style="font-weight: bold">this</span>.id = id;
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3
+4
+5
+6
+7</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> bad;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">SimpleAuthenticator</span> {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">boolean</span> authenticate(User user) {
+        <span style="font-weight: bold">return</span> <span style="font-weight: bold">true</span>;
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3
+4
+5
+6
+7
+8
+9</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> bad;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">LoginManager</span> {
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> SimpleAuthenticator simpleAuthenticator = <span style="font-weight: bold">new</span> SimpleAuthenticator();
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> login(User user) {
+        simpleAuthenticator.authenticate(user);
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Prof. Dr. Carsten M&uuml;ller <span style="color: rgb(166, 10, 8);">|</span> Software Engineering</span></p>

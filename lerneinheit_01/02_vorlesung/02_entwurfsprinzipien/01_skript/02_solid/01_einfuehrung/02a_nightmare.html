@@ -1,0 +1,303 @@
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; color: rgb(166, 10, 8); font-size: 22px;">Software Architecture | Nightmare</span></p>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
+ 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> nightmare;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">java.util.*</span>;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">Application</span> {
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">static</span> <span style="font-weight: bold">final</span> Map&lt;String, Double&gt; EXCHANGE_RATES = <span style="font-weight: bold">new</span> HashMap&lt;&gt;();
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">static</span> <span style="font-weight: bold">final</span> List&lt;String&gt; PROHIBITED_ITEMS = <span style="font-weight: bold">new</span> ArrayList&lt;&gt;();
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">static</span> <span style="font-weight: bold">int</span> baggageCounter = 0;
+
+    <span style="font-weight: bold">static</span> {
+        EXCHANGE_RATES.put(<span style="font-style: italic">&quot;USD&quot;</span>, 1.0);
+        EXCHANGE_RATES.put(<span style="font-style: italic">&quot;EUR&quot;</span>, 0.85);
+        EXCHANGE_RATES.put(<span style="font-style: italic">&quot;JPY&quot;</span>, 110.0);
+        PROHIBITED_ITEMS.add(<span style="font-style: italic">&quot;Explosives&quot;</span>);
+        PROHIBITED_ITEMS.add(<span style="font-style: italic">&quot;Flammable Liquids&quot;</span>);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">static</span> <span style="font-weight: bold">void</span> main(String... args) {
+        Application dropSystem = <span style="font-weight: bold">new</span> Application();
+        dropSystem.initiateBaggageDrop(12345, <span style="font-style: italic">&quot;John Doe&quot;</span>, <span style="font-style: italic">&quot;XYZ&quot;</span>, <span style="font-style: italic">&quot;AB1234&quot;</span>, <span style="font-style: italic">&quot;economy&quot;</span>, Arrays.asList(<span style="font-style: italic">&quot;ExtraBag&quot;</span>, <span style="font-style: italic">&quot;Overweight&quot;</span>, <span style="font-style: italic">&quot;FragileItem&quot;</span>), <span style="font-style: italic">&quot;Card&quot;</span>);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> initiateBaggageDrop(<span style="font-weight: bold">int</span> passengerId, String passengerName, String destination, String flightNumber,
+                                    String ticketClass, List&lt;String&gt; baggageItems, String paymentMethod) {
+        <span style="font-weight: bold">if</span> (baggageItems.size() &gt; 3 &amp;&amp; !ticketClass.equals(<span style="font-style: italic">&quot;premium&quot;</span>)) {
+            System.out.println(<span style="font-style: italic">&quot;error: non-premium passengers can only drop 3 bags.&quot;</span>);
+            <span style="font-weight: bold">return</span>;
+        }
+
+        <span style="font-weight: bold">double</span> totalFee = calculateFees(baggageItems);
+        <span style="font-weight: bold">double</span> paymentAmount = convertCurrency(totalFee, <span style="font-style: italic">&quot;USD&quot;</span>);
+
+        PaymentProcessor paymentProcessor = <span style="font-weight: bold">new</span> PaymentProcessor();
+        <span style="font-weight: bold">if</span> (!paymentProcessor.process(paymentMethod, paymentAmount)) {
+            System.out.println(<span style="font-style: italic">&quot;payment failed.&quot;</span>);
+            <span style="font-weight: bold">return</span>;
+        }
+
+        BaggageValidator validator = <span style="font-weight: bold">new</span> BaggageValidator();
+        validator.validate(baggageItems);
+
+        <span style="font-weight: bold">if</span> (calculateTotalWeight(baggageItems) &gt; 200) {
+            System.out.println(<span style="font-style: italic">&quot;error: excessive weight.&quot;</span>);
+            <span style="font-weight: bold">return</span>;
+        }
+
+        BaggageTracking tracking = <span style="font-weight: bold">new</span> BaggageTracking();
+        Map&lt;String, String&gt; trackingInfo = tracking.generateTrackingInfo(baggageItems);
+
+        printReceipt(passengerName, destination, flightNumber, ticketClass, baggageItems, paymentAmount, trackingInfo);
+        updateBaggageCounter(baggageItems.size());
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">double</span> calculateFees(List&lt;String&gt; items) {
+        <span style="font-weight: bold">double</span> totalFee = 0.0;
+        <span style="font-weight: bold">for</span> (String item : items) {
+            <span style="font-weight: bold">switch</span> (item) {
+                <span style="font-weight: bold">case</span> <span style="font-style: italic">&quot;ExtraBag&quot;</span>:
+                    totalFee += 100.0;
+                    <span style="font-weight: bold">break</span>;
+                <span style="font-weight: bold">case</span> <span style="font-style: italic">&quot;Overweight&quot;</span>:
+                    totalFee += 200.0;
+                    <span style="font-weight: bold">break</span>;
+                <span style="font-weight: bold">case</span> <span style="font-style: italic">&quot;FragileItem&quot;</span>:
+                    totalFee += 50.0;
+                    <span style="font-weight: bold">break</span>;
+                <span style="font-weight: bold">default</span>:
+                    System.out.println(<span style="font-style: italic">&quot;Warning: Unknown item type.&quot;</span>);
+            }
+        }
+        <span style="font-weight: bold">return</span> totalFee;
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">double</span> convertCurrency(<span style="font-weight: bold">double</span> amount, String currency) {
+        Double rate = EXCHANGE_RATES.get(currency);
+        <span style="font-weight: bold">return</span> (rate != <span style="font-weight: bold">null</span>) ? amount * rate : amount;
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">int</span> calculateTotalWeight(List&lt;String&gt; items) {
+        <span style="font-weight: bold">int</span> weight = 0;
+        <span style="font-weight: bold">for</span> (String item : items) {
+            weight += item.length() * 10;
+        }
+        <span style="font-weight: bold">return</span> weight;
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> printReceipt(String name, String destination, String flightNumber, String ticketClass,
+                              List&lt;String&gt; items, <span style="font-weight: bold">double</span> amount, Map&lt;String, String&gt; trackingInfo) {
+        System.out.println(<span style="font-style: italic">&quot;--- printing receipt ---&quot;</span>);
+        System.out.println(<span style="font-style: italic">&quot;passenger            : &quot;</span> + name);
+        System.out.println(<span style="font-style: italic">&quot;destination          : &quot;</span> + destination);
+        System.out.println(<span style="font-style: italic">&quot;flight number        : &quot;</span> + flightNumber);
+        System.out.println(<span style="font-style: italic">&quot;ticket class         : &quot;</span> + ticketClass);
+        System.out.println(<span style="font-style: italic">&quot;baggage items        : &quot;</span> + items);
+        System.out.println(<span style="font-style: italic">&quot;total fee            : &quot;</span> + amount);
+        System.out.println(<span style="font-style: italic">&quot;tracking information : &quot;</span> + trackingInfo);
+        System.out.println(<span style="font-style: italic">&quot;receipt printed successfully.&quot;</span>);
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> updateBaggageCounter(<span style="font-weight: bold">int</span> count) {
+        baggageCounter += count;
+        System.out.println(<span style="font-style: italic">&quot;total baggage items processed: &quot;</span> + baggageCounter);
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">static</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">PaymentProcessor</span> {
+        <span style="font-weight: bold">public</span> <span style="font-weight: bold">boolean</span> process(String method, <span style="font-weight: bold">double</span> amount) {
+            <span style="font-weight: bold">return</span> switch (method.toLowerCase()) {
+                <span style="font-weight: bold">case</span> <span style="font-style: italic">&quot;card&quot;</span> -&gt; processCardPayment(amount);
+                <span style="font-weight: bold">case</span> <span style="font-style: italic">&quot;cash&quot;</span> -&gt; {
+                    System.out.println(<span style="font-style: italic">&quot;cash payment is not supported.&quot;</span>);
+                    yield <span style="font-weight: bold">false</span>;
+                }
+                <span style="font-weight: bold">default</span> -&gt; {
+                    System.out.println(<span style="font-style: italic">&quot;invalid payment method.&quot;</span>);
+                    yield <span style="font-weight: bold">false</span>;
+                }
+            };
+        }
+
+        <span style="font-weight: bold">private</span> <span style="font-weight: bold">boolean</span> processCardPayment(<span style="font-weight: bold">double</span> amount) {
+            <span style="font-weight: bold">return</span> amount &gt; 0;
+        }
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">static</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">BaggageValidator</span> {
+        <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> validate(List&lt;String&gt; items) {
+            <span style="font-weight: bold">for</span> (String item : items) {
+                <span style="font-weight: bold">if</span> (PROHIBITED_ITEMS.contains(item)) {
+                    System.out.println(<span style="font-style: italic">&quot;error: prohibited item detected.&quot;</span>);
+                    <span style="font-weight: bold">return</span>;
+                }
+                <span style="font-weight: bold">if</span> (item.length() &gt; 20) {
+                    System.out.println(<span style="font-style: italic">&quot;error: item name too long.&quot;</span>);
+                    <span style="font-weight: bold">return</span>;
+                }
+            }
+        }
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">static</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">BaggageTracking</span> {
+        <span style="font-weight: bold">public</span> Map&lt;String, String&gt; generateTrackingInfo(List&lt;String&gt; items) {
+            Map&lt;String, String&gt; trackingInfo = <span style="font-weight: bold">new</span> HashMap&lt;&gt;();
+            <span style="font-weight: bold">for</span> (String item : items) {
+                trackingInfo.put(item, <span style="font-style: italic">&quot;TRACK-&quot;</span> + UUID.randomUUID());
+            }
+            <span style="font-weight: bold">return</span> trackingInfo;
+        }
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Prof. Dr. Carsten M&uuml;ller <span style="color: rgb(166, 10, 8);">|</span> Software Engineering</span></p>

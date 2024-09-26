@@ -1,0 +1,105 @@
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; color: rgb(166, 10, 8); font-size: 22px;">Pizza Vending Machine | Test | Mockito</span></p>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> mock;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">model.*</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">org.junit.jupiter.api.Test</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">org.mockito.InOrder</span>;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">static</span> org.junit.jupiter.api.Assertions.*;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">static</span> org.mockito.Mockito.*;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">TestApplication</span> {
+    @Test
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> pizzaVendingMachine() {
+        PizzaVendingMachine machine = spy(PizzaVendingMachine.class);
+
+        Cart cart = <span style="font-weight: bold">new</span> Cart();
+        Pizza pizza = <span style="font-weight: bold">new</span> Pizza(PizzaType.PEPPERONI, PizzaSize.MEDIUM, CrustType.THICK);
+        Payment payment = spy(<span style="font-weight: bold">new</span> Payment(PaymentMethod.CREDIT_CARD, 10.00));
+
+        machine.displayMenu();
+        verify(machine, times(1)).displayMenu();
+
+        when(machine.selectPizza(any(PizzaType.class), any(PizzaSize.class), any(CrustType.class))).thenReturn(pizza);
+        Pizza selectedPizza = machine.selectPizza(PizzaType.PEPPERONI, PizzaSize.MEDIUM, CrustType.THICK);
+        assertSame(selectedPizza.getType(), PizzaType.PEPPERONI);
+        verify(machine, times(1)).selectPizza(any(PizzaType.class), any(PizzaSize.class), any(CrustType.class));
+
+        machine.addToCart(cart, selectedPizza);
+        verify(machine, times(1)).addToCart(any(Cart.class), any(Pizza.class));
+
+        <span style="font-weight: bold">double</span> total = machine.calculateTotal(cart);
+        assertEquals(10.00, total);
+        verify(machine, times(1)).calculateTotal(any(Cart.class));
+
+        when(payment.processPayment()).thenReturn(<span style="font-weight: bold">true</span>);
+        <span style="font-weight: bold">boolean</span> paymentProcessed = machine.processPayment(payment);
+        assertTrue(paymentProcessed);
+        verify(machine, times(1)).processPayment(any(Payment.class));
+
+        machine.dispensePizza();
+        verify(machine, times(1)).dispensePizza();
+
+        InOrder inOrder = inOrder(machine);
+        inOrder.verify(machine).displayMenu();
+        inOrder.verify(machine).selectPizza(any(PizzaType.class), any(PizzaSize.class), any(CrustType.class));
+        inOrder.verify(machine).addToCart(any(Cart.class), any(Pizza.class));
+        inOrder.verify(machine).calculateTotal(any(Cart.class));
+        inOrder.verify(machine).processPayment(any(Payment.class));
+        inOrder.verify(machine).dispensePizza();
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Prof. Dr. Carsten M&uuml;ller <span style="color: rgb(166, 10, 8);">|</span> Software Engineering</span></p>

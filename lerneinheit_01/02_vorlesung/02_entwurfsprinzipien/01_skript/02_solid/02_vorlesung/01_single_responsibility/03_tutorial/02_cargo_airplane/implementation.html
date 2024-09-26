@@ -1,0 +1,600 @@
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; color: rgb(166, 10, 8); font-size: 22px;">Single Responsibility Principle</span></p>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
+ 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> bad;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.Data</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.NonNull</span>;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">java.io.FileWriter</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">java.io.IOException</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">java.util.ArrayList</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">java.util.List</span>;
+
+@Data
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">CargoAirplane</span> {
+    @NonNull
+    <span style="font-weight: bold">private</span> String model;
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">int</span> capacity;
+    <span style="font-weight: bold">private</span> List&lt;String&gt; cargo = <span style="font-weight: bold">new</span> ArrayList&lt;&gt;();
+    <span style="font-weight: bold">private</span> String currentLocation;
+    <span style="font-weight: bold">private</span> String maintenanceSchedule;
+    <span style="font-weight: bold">private</span> List&lt;String&gt; passengers = <span style="font-weight: bold">new</span> ArrayList&lt;&gt;();
+    <span style="font-weight: bold">private</span> String weatherCondition;
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">boolean</span> isInEmergency;
+
+    <span style="font-style: italic">// cargo Management</span>
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> loadCargo(String item) {
+        <span style="font-weight: bold">if</span> (cargo.size() &gt;= capacity) {
+            <span style="font-weight: bold">throw</span> <span style="font-weight: bold">new</span> IllegalStateException(<span style="font-style: italic">&quot;Cargo hold full&quot;</span>);
+        }
+        cargo.add(item);
+        manageCargoInventory();
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> unloadCargo() {
+        cargo.clear();
+        manageCargoInventory();
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> manageCargoInventory() {
+        System.out.println(<span style="font-style: italic">&quot;managing cargo inventory.&quot;</span>);
+    }
+
+    <span style="font-style: italic">// flight operations</span>
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> flyToDestination(String destination) {
+        System.out.println(<span style="font-style: italic">&quot;flying to &quot;</span> + destination);
+        currentLocation = destination;
+        recordFlightLog(destination);
+        adjustForWeather(weatherCondition);
+        checkFuelLevel();
+        manageEntertainmentSystem();
+        performHealthCheck();
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> checkFuelLevel() {
+        System.out.println(<span style="font-style: italic">&quot;checking fuel level.&quot;</span>);
+    }
+
+    <span style="font-style: italic">// flight log recording</span>
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> recordFlightLog(String destination) {
+        <span style="font-weight: bold">try</span> (FileWriter writer = <span style="font-weight: bold">new</span> FileWriter(<span style="font-style: italic">&quot;flight_log.txt&quot;</span>, <span style="font-weight: bold">true</span>)) {
+            writer.write(<span style="font-style: italic">&quot;Flight to &quot;</span> + destination + <span style="font-style: italic">&quot; at &quot;</span> + System.currentTimeMillis() + <span style="font-style: italic">&quot;\n&quot;</span>);
+        } <span style="font-weight: bold">catch</span> (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    <span style="font-style: italic">// maintenance</span>
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> performMaintenance() {
+        System.out.println(<span style="font-style: italic">&quot;performing maintenance checks.&quot;</span>);
+        scheduleNextMaintenance();
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> scheduleNextMaintenance() {
+        System.out.println(<span style="font-style: italic">&quot;scheduling next maintenance.&quot;</span>);
+        maintenanceSchedule = <span style="font-style: italic">&quot;next maintenance in 100 hours&quot;</span>;
+    }
+
+    <span style="font-style: italic">// passenger Management</span>
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> allocateSeatForPassenger(String passengerName) {
+        System.out.println(<span style="font-style: italic">&quot;allocating seat to passenger: &quot;</span> + passengerName);
+        passengers.add(passengerName);
+        assignMealToPassenger(passengerName);
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> assignMealToPassenger(String passengerName) {
+        System.out.println(<span style="font-style: italic">&quot;assigning meal to passenger: &quot;</span> + passengerName);
+    }
+
+    <span style="font-style: italic">// weather Adjustments</span>
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> adjustForWeather(String weatherCondition) {
+        System.out.println(<span style="font-style: italic">&quot;adjusting for weather condition: &quot;</span> + weatherCondition);
+    }
+
+    <span style="font-style: italic">// emergency Protocols</span>
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> handleEmergencyProtocol() {
+        System.out.println(<span style="font-style: italic">&quot;handling emergency protocol.&quot;</span>);
+        isInEmergency = <span style="font-weight: bold">true</span>;
+        notifyAuthorities();
+        activateEmergencyLights();
+        dropEmergencySupplies();
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> notifyAuthorities() {
+        System.out.println(<span style="font-style: italic">&quot;notifying authorities.&quot;</span>);
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> activateEmergencyLights() {
+        System.out.println(<span style="font-style: italic">&quot;activating emergency lights.&quot;</span>);
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> dropEmergencySupplies() {
+        System.out.println(<span style="font-style: italic">&quot;Dropping emergency supplies.&quot;</span>);
+    }
+
+    <span style="font-style: italic">// in-flight entertainment system management</span>
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> manageEntertainmentSystem() {
+        System.out.println(<span style="font-style: italic">&quot;managing in-flight entertainment system.&quot;</span>);
+    }
+
+    <span style="font-style: italic">// health checks</span>
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> performHealthCheck() {
+        System.out.println(<span style="font-style: italic">&quot;performing health check.&quot;</span>);
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<hr>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.Data</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.NonNull</span>;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">java.util.ArrayList</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">java.util.List</span>;
+
+@Data
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">CargoAirplane</span> {
+    @NonNull
+    <span style="font-weight: bold">private</span> String model;
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">int</span> capacity;
+    <span style="font-weight: bold">private</span> List&lt;String&gt; cargo = <span style="font-weight: bold">new</span> ArrayList&lt;&gt;();
+    <span style="font-weight: bold">private</span> String currentLocation;
+    <span style="font-weight: bold">private</span> String weatherCondition;
+    <span style="font-weight: bold">private</span> List&lt;String&gt; passengers = <span style="font-weight: bold">new</span> ArrayList&lt;&gt;();
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">boolean</span> isInEmergency;
+    <span style="font-weight: bold">private</span> String maintenanceSchedule;
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">MaintenanceService</span> {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> performMaintenance() {
+        System.out.println(<span style="font-style: italic">&quot;performing maintenance checks.&quot;</span>);
+        scheduleNextMaintenance();
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> scheduleNextMaintenance() {
+        System.out.println(<span style="font-style: italic">&quot;scheduling next maintenance.&quot;</span>);
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">EmergencyService</span> {
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> CargoAirplane airplane;
+
+    <span style="font-weight: bold">public</span> EmergencyService(CargoAirplane airplane) {
+        <span style="font-weight: bold">this</span>.airplane = airplane;
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> handleEmergencyProtocol() {
+        System.out.println(<span style="font-style: italic">&quot;handling emergency protocol.&quot;</span>);
+        airplane.setInEmergency(<span style="font-weight: bold">true</span>);
+        notifyAuthorities();
+        activateEmergencyLights();
+        dropEmergencySupplies();
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> notifyAuthorities() {
+        System.out.println(<span style="font-style: italic">&quot;notifying authorities.&quot;</span>);
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> activateEmergencyLights() {
+        System.out.println(<span style="font-style: italic">&quot;activating emergency lights.&quot;</span>);
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> dropEmergencySupplies() {
+        System.out.println(<span style="font-style: italic">&quot;dropping emergency supplies.&quot;</span>);
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">java.io.FileWriter</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">java.io.IOException</span>;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">FlightLogger</span> {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> recordFlightLog(String destination) {
+        <span style="font-weight: bold">try</span> (FileWriter writer = <span style="font-weight: bold">new</span> FileWriter(<span style="font-style: italic">&quot;flight_log.txt&quot;</span>, <span style="font-weight: bold">true</span>)) {
+            writer.write(<span style="font-style: italic">&quot;flight to &quot;</span> + destination + <span style="font-style: italic">&quot; at &quot;</span> + System.currentTimeMillis() + <span style="font-style: italic">&quot;\n&quot;</span>);
+        } <span style="font-weight: bold">catch</span> (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3
+4
+5
+6
+7</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">WeatherService</span> {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> adjustForWeather(String weatherCondition) {
+        System.out.println(<span style="font-style: italic">&quot;adjusting for weather condition: &quot;</span> + weatherCondition);
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3
+4
+5
+6
+7</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">FuelService</span> {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> checkFuelLevel() {
+        System.out.println(<span style="font-style: italic">&quot;checking fuel level.&quot;</span>);
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.RequiredArgsConstructor</span>;
+
+@RequiredArgsConstructor
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">CargoManagementService</span> {
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> CargoAirplane airplane;
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> loadCargo(String item) {
+        <span style="font-weight: bold">if</span> (airplane.getCargo().size() &gt;= airplane.getCapacity()) {
+            <span style="font-weight: bold">throw</span> <span style="font-weight: bold">new</span> IllegalStateException(<span style="font-style: italic">&quot;cargo hold full&quot;</span>);
+        }
+        airplane.getCargo().add(item);
+        manageCargoInventory();
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> unloadCargo() {
+        airplane.getCargo().clear();
+        manageCargoInventory();
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> manageCargoInventory() {
+        System.out.println(<span style="font-style: italic">&quot;managing cargo inventory.&quot;</span>);
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.RequiredArgsConstructor</span>;
+
+@RequiredArgsConstructor
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">PassengerService</span> {
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> CargoAirplane airplane;
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> allocateSeatForPassenger(String passengerName) {
+        System.out.println(<span style="font-style: italic">&quot;allocating seat to passenger: &quot;</span> + passengerName);
+        airplane.getPassengers().add(passengerName);
+        assignMealToPassenger(passengerName);
+    }
+
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">void</span> assignMealToPassenger(String passengerName) {
+        System.out.println(<span style="font-style: italic">&quot;assigning meal to passenger: &quot;</span> + passengerName);
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3
+4
+5
+6
+7</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">EntertainmentService</span> {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> manageEntertainmentSystem() {
+        System.out.println(<span style="font-style: italic">&quot;managing in-flight entertainment system.&quot;</span>);
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3
+4
+5
+6
+7</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">HealthCheckService</span> {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> performHealthCheck() {
+        System.out.println(<span style="font-style: italic">&quot;performing health check.&quot;</span>);
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">lombok.RequiredArgsConstructor</span>;
+
+@RequiredArgsConstructor
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">FlightService</span> {
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> CargoAirplane airplane;
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> FlightLogger flightLogger;
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> WeatherService weatherService;
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> FuelService fuelService;
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> EntertainmentService entertainmentService;
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> HealthCheckService healthCheckService;
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> flyToDestination(String destination) {
+        System.out.println(<span style="font-style: italic">&quot;Flying to &quot;</span> + destination);
+        airplane.setCurrentLocation(destination);
+        flightLogger.recordFlightLog(destination);
+        weatherService.adjustForWeather(airplane.getWeatherCondition());
+        fuelService.checkFuelLevel();
+        entertainmentService.manageEntertainmentSystem();
+        healthCheckService.performHealthCheck();
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Prof. Dr. Carsten M&uuml;ller <span style="color: rgb(166, 10, 8);">|</span> Software Engineering</span></p>

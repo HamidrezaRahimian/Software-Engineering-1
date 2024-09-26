@@ -1,0 +1,174 @@
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; color: rgb(166, 10, 8); font-size: 22px;">Dependency Inversion Principle</span></p>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3
+4
+5
+6
+7
+8</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> bad;
+
+<span style="font-style: italic">// low-level module</span>
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">AIChip</span> {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> processAI() {
+        System.out.println(<span style="font-style: italic">&quot;processing AI.&quot;</span>);
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> bad;
+
+<span style="font-style: italic">// high-level module</span>
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">Smartphone</span> {
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> AIChip aiChip;
+
+    <span style="font-weight: bold">public</span> Smartphone() {
+        aiChip = <span style="font-weight: bold">new</span> AIChip();  <span style="font-style: italic">// direct dependency on the low-level module</span>
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> useAI() {
+        aiChip.processAI();
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3
+4
+5
+6
+7
+8</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> bad;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">Application</span> {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">static</span> <span style="font-weight: bold">void</span> main(String... args) {
+        Smartphone smartphone = <span style="font-weight: bold">new</span> Smartphone();
+        smartphone.useAI();
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<hr>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3
+4
+5
+6</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-style: italic">// abstraction</span>
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">abstract</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">AIProcessor</span> {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">abstract</span> <span style="font-weight: bold">void</span> processAI();
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3
+4
+5
+6
+7
+8</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-style: italic">// low-level module</span>
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">AIChip</span> <span style="font-weight: bold">extends</span> AIProcessor {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> processAI() {
+        System.out.println(<span style="font-style: italic">&quot;processing AI.&quot;</span>);
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3
+4
+5
+6
+7
+8</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-style: italic">// low-level module</span>
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">AdvancedAIChip</span> <span style="font-weight: bold">extends</span> AIProcessor {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> processAI() {
+        System.out.println(<span style="font-style: italic">&quot;processing AI in advanced mode.&quot;</span>);
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-style: italic">// high-level module</span>
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">Smartphone</span> {
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">final</span> AIProcessor aiProcessor;
+
+    <span style="font-weight: bold">public</span> Smartphone(AIProcessor aiProcessor) {
+        <span style="font-weight: bold">this</span>.aiProcessor = aiProcessor;  <span style="font-style: italic">// dependency injection of the abstraction</span>
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> useAI() {
+        aiProcessor.processAI();
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> good;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">Application</span> {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">static</span> <span style="font-weight: bold">void</span> main(String... args) {
+        AIChip aiChip = <span style="font-weight: bold">new</span> AIChip();
+        AdvancedAIChip advancedAIChip = <span style="font-weight: bold">new</span> AdvancedAIChip();
+
+        Smartphone smartphone01 = <span style="font-weight: bold">new</span> Smartphone(aiChip);
+        smartphone01.useAI();
+
+        Smartphone smartphone02 = <span style="font-weight: bold">new</span> Smartphone(advancedAIChip);
+        smartphone02.useAI();
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Prof. Dr. Carsten M&uuml;ller <span style="color: rgb(166, 10, 8);">|</span> Software Engineering</span></p>

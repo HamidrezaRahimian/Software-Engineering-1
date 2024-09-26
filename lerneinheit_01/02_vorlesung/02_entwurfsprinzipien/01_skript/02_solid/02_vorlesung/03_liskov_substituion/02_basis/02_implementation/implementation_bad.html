@@ -1,0 +1,126 @@
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; color: rgb(166, 10, 8); font-size: 22px;">Liskov Substitution Principle | bad</span></p>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> bad;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">MediaPlayer</span> {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> playAudio() {
+        System.out.println(<span style="font-style: italic">&quot;playing audio&quot;</span>);
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> playVideo() {
+        System.out.println(<span style="font-style: italic">&quot;playing video&quot;</span>);
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3
+4</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> bad;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">DVIMediaPlayer</span> <span style="font-weight: bold">extends</span> MediaPlayer {
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3
+4</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> bad;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">VLCMediaPlayer</span> <span style="font-weight: bold">extends</span> MediaPlayer {
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3
+4
+5
+6
+7
+8</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> bad;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">java.io.Serial</span>;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">VideoUnsupportedException</span> <span style="font-weight: bold">extends</span> RuntimeException {
+    @Serial
+    <span style="font-weight: bold">private</span> <span style="font-weight: bold">static</span> <span style="font-weight: bold">final</span> <span style="font-weight: bold">long</span> serialVersionUID = 1L;
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%">1
+2
+3
+4
+5
+6
+7</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> bad;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">XZMediaPlayer</span> <span style="font-weight: bold">extends</span> MediaPlayer {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">void</span> playVideo() {
+        <span style="font-weight: bold">throw</span> <span style="font-weight: bold">new</span> VideoUnsupportedException();
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> bad;
+
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">java.util.ArrayList</span>;
+<span style="font-weight: bold">import</span> <span style="font-weight: bold">java.util.List</span>;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">Application</span> {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">static</span> <span style="font-weight: bold">void</span> playVideoInAllMediaPlayers(List&lt;MediaPlayer&gt; mediaPlayerList) {
+        <span style="font-weight: bold">for</span> (MediaPlayer player : mediaPlayerList) {
+            player.playVideo();
+        }
+    }
+
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">static</span> <span style="font-weight: bold">void</span> main(String... args) {
+        List&lt;MediaPlayer&gt; players = <span style="font-weight: bold">new</span> ArrayList&lt;&gt;();
+        players.add(<span style="font-weight: bold">new</span> VLCMediaPlayer());
+        players.add(<span style="font-weight: bold">new</span> DVIMediaPlayer());
+        playVideoInAllMediaPlayers(players);
+
+        System.out.println(<span style="font-style: italic">&quot;---&quot;</span>);
+
+        players.add(<span style="font-weight: bold">new</span> XZMediaPlayer());
+        playVideoInAllMediaPlayers(players);
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Prof. Dr. Carsten M&uuml;ller <span style="color: rgb(166, 10, 8);">|</span> Software Engineering</span></p>

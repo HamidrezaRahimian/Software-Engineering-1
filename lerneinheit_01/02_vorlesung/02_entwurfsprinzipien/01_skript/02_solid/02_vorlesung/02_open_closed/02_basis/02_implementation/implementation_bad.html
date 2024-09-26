@@ -1,0 +1,68 @@
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; color: rgb(166, 10, 8); font-size: 22px;">Open-Closed Principle | bad</span></p>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> bad;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">FileParser</span> {
+    <span style="font-weight: bold">public</span> String parse(String filePath, String expression) {
+        <span style="font-weight: bold">if</span> (filePath.indexOf(<span style="font-style: italic">&quot;.xml&quot;</span>) &gt; 1) {
+            <span style="font-weight: bold">return</span> parseXML(filePath, expression);
+        } <span style="font-weight: bold">else</span> <span style="font-weight: bold">if</span> (filePath.indexOf(<span style="font-style: italic">&quot;.txt&quot;</span>) &gt; 1) {
+            <span style="font-weight: bold">return</span> parseText(filePath, expression);
+        }
+
+        <span style="font-weight: bold">return</span> <span style="font-weight: bold">null</span>;
+    }
+
+    <span style="font-weight: bold">private</span> String parseXML(String filePath, String expression) {
+        <span style="font-weight: bold">return</span> <span style="font-style: italic">&quot;parsing xml file&quot;</span>;
+    }
+
+    <span style="font-weight: bold">private</span> String parseText(String filePath, String expression) {
+        <span style="font-weight: bold">return</span> <span style="font-style: italic">&quot;parsing text file&quot;</span>;
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="font-weight: bold">package</span> bad;
+
+<span style="font-weight: bold">public</span> <span style="font-weight: bold">class</span> <span style="font-weight: bold">Application</span> {
+    <span style="font-weight: bold">public</span> <span style="font-weight: bold">static</span> <span style="font-weight: bold">void</span> main(String... args) {
+        String filePath = <span style="font-style: italic">&quot;test.txt&quot;</span>;
+        String expression = <span style="font-style: italic">&quot;expr&quot;</span>;
+        FileParser fileParser = <span style="font-weight: bold">new</span> FileParser();
+        System.out.println(<span style="font-style: italic">&quot;result : &quot;</span> + fileParser.parse(filePath, expression));
+    }
+}
+</pre></td></tr></table></div>
+<br>
+<p><span style="font-family: Arial, Helvetica, sans-serif; font-size: 11px;">Prof. Dr. Carsten M&uuml;ller <span style="color: rgb(166, 10, 8);">|</span> Software Engineering</span></p>
