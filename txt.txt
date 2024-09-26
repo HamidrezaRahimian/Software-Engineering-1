@@ -1,9 +1,0 @@
-<<<<<<< HEAD
-git checkout -b main  # Create a new branch named 'main'
-touch README.md       # Add a simple file (like README.md)
-git add README.md
-git commit -m "Initial commit"  # Commit the changes
-git push -u origin main         # Push to GitHub
-=======
-txt
->>>>>>> 417686ccdd06442d19cf5dfacc9c4d8235b5192a
