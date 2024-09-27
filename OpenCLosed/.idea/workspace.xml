@@ -1,27 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="a50273a4-e917-47b5-bf6e-2aa62e31b28a" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../implementation/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../implementation/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../implementation/.idea/gradle.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../implementation/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../implementation/AirplaneN/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../implementation/AirplaneN/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../implementation/AirplaneN/.idea/gradle.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../implementation/AirplaneN/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../implementation/AirplaneN/build.gradle.kts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../implementation/AirplaneN/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../implementation/AirplaneN/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../implementation/AirplaneN/gradlew" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../implementation/AirplaneN/gradlew.bat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../implementation/AirplaneN/settings.gradle.kts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../implementation/AirplaneN/src/main/java/DHBW/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../implementation/build.gradle.kts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../implementation/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../implementation/gradlew" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../implementation/gradlew.bat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../implementation/settings.gradle.kts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Diagramm/02 Entwurfsprinzipien/01/SingleResopnibility/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Diagramm/02 Entwurfsprinzipien/01/SingleResopnibility/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Diagramm/02 Entwurfsprinzipien/01/SingleResopnibility/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Diagramm/02 Entwurfsprinzipien/01/SingleResopnibility/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,7 +54,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1727447278220</updated>
-      <workItem from="1727447280397" duration="323000" />
+      <workItem from="1727447280397" duration="983000" />
     </task>
     <servers />
   </component>
